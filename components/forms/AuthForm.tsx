@@ -7,6 +7,7 @@ import { redirect } from "next/navigation";
 import "@/app/styles/forms/auth-form.css";
 import api from "@/lib/axiosInterseptor";
 import { AuthFormProps } from "@/types";
+import Cookies from "js-cookie";
 
 const authFormDetails = {
   login: {
@@ -31,12 +32,16 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
     const data = Object.fromEntries(formData);
 
     try {
-      await api.post(`/auth/${type}`, type === "login" ? data : formData);
+      const res = await api.post(`/auth/${type}`, type === "login" ? data : formData);
+
+      const { accessToken } = res.data;
+      // Cookies.set("accessToken", accessToken, { expires: 1 / (60 * 24) });
       redirect("/profile");
     } catch (error) {
-      console.error(error);
+      console.error("Submit form error:", error);
     }
   };
+
   return (
     <section className="flex flex-col items-center justify-center gap-4 h-screen">
       <div className="auth-form-container bg-white shadow-lg rounded-lg p-6 w-96 md:w-[600px] lg:w-1/2 min-h-[350px]">
@@ -76,3 +81,4 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
 };
 
 export default AuthForm;
+

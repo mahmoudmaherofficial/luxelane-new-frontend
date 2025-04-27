@@ -41,3 +41,6 @@ export interface InputProps {
   minLength?: number;
   label?: string;
 }
+export interface RefreshTokenResponse {
+  accessToken?: string;
+}
