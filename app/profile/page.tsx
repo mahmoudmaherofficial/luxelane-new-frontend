@@ -1,18 +1,15 @@
 "use client";
 import BASE_URL from "@/api/BASE_URL";
 import Button from "@/components/ui/Button";
-import api from "@/lib/axiosInterseptor";
-import { User } from "@/types";
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import Swal from "sweetalert2";
 import { deleteAccount } from "@/api/account";
 import Loader from "@/components/ui/Loader";
+import { useAccountContext } from "@/context/AccountContext";
 
 const ProfilePage = () => {
-  const [user, setUser] = useState<User>();
-  const [loading, setLoading] = useState(false);
+  const { user, loading } = useAccountContext();
   const handleDeleteAccount = async () => {
     const { value: inputValue } = await Swal.fire({
       title: `Enter "${user?.username}" to confirm deletion`,
@@ -39,7 +36,6 @@ const ProfilePage = () => {
 
     if (inputValue) {
       try {
-        setLoading(true);
         await deleteAccount();
         Swal.fire("Account deleted successfully");
         Cookies.remove("accessToken");
@@ -48,8 +44,6 @@ const ProfilePage = () => {
       } catch (err) {
         console.error(err);
         Swal.fire("Error", "Failed to delete account", "error");
-      } finally {
-        setLoading(false);
       }
     }
   }; // handleDeleteAccount
@@ -58,20 +52,12 @@ const ProfilePage = () => {
     1996: "Seller",
     2004: "User",
   };
-  useEffect(() => {
-    setLoading(true);
-    api
-      .get("/account")
-      .then((res) => setUser(res.data))
-      .catch((err) => console.log(err))
-      .finally(() => setLoading(false));
-  }, []);
 
   return (
     <>
       {loading && <Loader />}
       <div className="bg-primary-100">
-        <div className="container h-screen">
+        <div className="container h-[calc(100vh-74px)]">
           <h1 className="text-4xl font-bold mb-4 pt-16 text-center text-primary-900">Your Profile</h1>
           <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
             <div className="md:flex">

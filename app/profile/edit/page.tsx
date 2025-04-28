@@ -1,36 +1,29 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { getAccount, updateAccount } from "@/api/account";
+import { useEffect, useState } from "react";
+import { updateAccount } from "@/api/account";
 import Button from "@/components/ui/Button";
 import { toast } from "react-toastify";
 import Input from "@/components/ui/Input";
 import Loader from "@/components/ui/Loader";
+import { useAccountContext } from "@/context/AccountContext";
 
 const EditProfilePage = () => {
-  const router = useRouter();
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const { user, loading } = useAccountContext();
+  interface FormData {
+    username: string;
+    email: string;
+  }
+
+  const [formData, setFormData] = useState<FormData>({
     username: "",
     email: "",
   });
 
   useEffect(() => {
-    const fetchUserProfile = async () => {
-      try {
-        setLoading(true);
-        const res = await getAccount();
-        setFormData({
-          username: res.data.username,
-          email: res.data.email,
-        });
-      } catch (err) {
-        toast.error("Failed to load profile");
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchUserProfile();
+    setFormData({
+      username: user?.username ?? "",
+      email: user?.email ?? "",
+    });
   }, []); // Empty dependency array to run only once on mount
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -43,15 +36,12 @@ const EditProfilePage = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setLoading(true);
       await updateAccount(formData);
       toast.success("Profile updated successfully!");
-      router.push("/profile");
+      window.location.replace("/profile");
     } catch (err) {
       console.error("Error updating profile:", err);
       toast.error("Failed to update profile");
-    } finally {
-      setLoading(false);
     }
   };
 

@@ -54,3 +54,7 @@ export interface User {
   image: string;
   role: number;
 }
+export interface AccountContextType {
+  user: User | undefined;
+  loading: boolean;
+}
