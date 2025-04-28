@@ -1,13 +1,24 @@
 import { InputProps } from "@/types";
 import React from "react";
 
-const Input = ({ type = "text", name, required = false, accept, minLength = 0, label }: InputProps) => {
+const Input = ({
+  type = "text",
+  name,
+  value,
+  onChange,
+  required = false,
+  accept,
+  minLength = 0,
+  label,
+}: InputProps) => {
   return (
     <div className="relative w-full">
       <input
         type={type}
         name={name}
         id={name}
+        value={value}
+        onChange={onChange}
         required={required}
         placeholder=" "
         accept={accept}

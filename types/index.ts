@@ -36,6 +36,8 @@ export interface ButtonProps {
 export interface InputProps {
   type: "text" | "email" | "password" | "number" | "file";
   name?: string;
+  value?: any;
+  onChange?: React.ChangeEventHandler<HTMLInputElement>;
   required?: boolean;
   accept?: string;
   minLength?: number;
