@@ -5,9 +5,9 @@ import Button from "@/components/ui/Button";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import "@/app/styles/forms/auth-form.css";
-import api from "@/lib/axiosInterseptor";
 import { AuthFormProps } from "@/types";
-import Cookies from "js-cookie";
+import { toast } from "react-toastify";
+import { login, register } from "@/api/authentication";
 
 const authFormDetails = {
   login: {
@@ -32,13 +32,16 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
     const data = Object.fromEntries(formData);
 
     try {
-      const res = await api.post(`/auth/${type}`, type === "login" ? data : formData);
-
-      const { accessToken } = res.data;
-      // Cookies.set("accessToken", accessToken, { expires: 1 / (60 * 24) });
-      redirect("/profile");
-    } catch (error) {
-      console.error("Submit form error:", error);
+      if (type === "register") {
+        await register(formData);
+        toast.success("Account created successfully");
+      } else if (type === "login") {
+        await login(data);
+        toast.success("Logged in successfully");
+      }
+      redirect("/");
+    } catch (error: any) {
+      toast.error(error.response?.data?.error);
     }
   };
 
@@ -47,7 +50,6 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
       <div className="auth-form-container bg-white shadow-lg rounded-lg p-6 w-96 md:w-[600px] lg:w-1/2 min-h-[350px]">
         <form className="flex flex-col gap-4 h-full" onSubmit={submitForm}>
           <h1 className="text-3xl font-bold mb-2 text-primary-500">{title}</h1>
-
           {fields.map((field, index) => (
             <Input
               key={index}
@@ -81,4 +83,3 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
 };
 
 export default AuthForm;
-

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Merriweather_Sans } from "next/font/google";
 import "./styles/globals.css";
 import "./styles/tailwind.css";
+import { ToastContainer } from "react-toastify";
 
 const merriweather = Merriweather_Sans({
   subsets: ["latin"],
@@ -16,7 +17,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className={merriweather.className}>
-        <main>{children}</main>
+        <main>
+          <ToastContainer />
+          {children}
+        </main>
       </body>
     </html>
   );
