@@ -1,15 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useAccountContext } from "@/context/AccountContext";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Slider from "react-slick";
+import "@/app/styles/slick-custom.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "@/app/styles/slick-custom.css";
-import { useAccountContext } from "@/context/AccountContext";
 
 const HomePage = () => {
   const { user, loading } = useAccountContext();
