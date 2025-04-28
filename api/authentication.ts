@@ -2,4 +2,4 @@ import api from "@/lib/axiosInterseptor";
 
 export const login = (data: any) => api.post("/auth/login", data);
 export const register = (data: any) => api.post("/auth/register", data);
-export const logout = () => api.post("/auth/logout");
+export const logoutFn = () => api.post("/auth/logout");

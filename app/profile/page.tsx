@@ -8,6 +8,7 @@ import { deleteAccount } from "@/api/account";
 import Loader from "@/components/ui/Loader";
 import { useAccountContext } from "@/context/AccountContext";
 
+
 const ProfilePage = () => {
   const { user, loading } = useAccountContext();
   const handleDeleteAccount = async () => {

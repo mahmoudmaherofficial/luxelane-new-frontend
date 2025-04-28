@@ -31,15 +31,6 @@ const HomePage = () => {
     },
   ]);
 
-  // Placeholder for fetching products
-  useEffect(() => {
-    // Example: const fetchProducts = async () => {
-    //   const res = await api.get('/products/featured');
-    //   setFeaturedProducts(res.data);
-    // };
-    // fetchProducts();
-  }, []);
-
   const handleShopNow = () => {
     router.push("/shop");
   };

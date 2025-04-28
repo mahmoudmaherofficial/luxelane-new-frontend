@@ -1,6 +1,9 @@
 import AuthForm from "@/components/forms/AuthForm";
-import Input from "@/components/ui/Input";
 import React from "react";
+
+export const metadata = {
+  title: "Login",
+};
 
 const LoginPage = () => {
   return (

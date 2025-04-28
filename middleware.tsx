@@ -14,6 +14,14 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     return NextResponse.next();
   }
 
+  // Handle /logout route
+  if (pathname.startsWith("/logout")) {
+    if (!accessToken && !refreshToken) {
+      return NextResponse.redirect(new URL("/", request.url));
+    }
+    return NextResponse.next();
+  }
+
   // Handle /profile routes
   if (pathname.startsWith("/profile")) {
     const response = NextResponse.next();
@@ -47,6 +55,5 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
 }
 
 export const config = {
-  matcher: ["/login", "/register", "/profile/:path*"],
+  matcher: ["/login", "/register", "/profile/:path*", "/logout"],
 };
-

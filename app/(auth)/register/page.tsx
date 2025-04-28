@@ -1,6 +1,10 @@
 import AuthForm from "@/components/forms/AuthForm";
 import React from "react";
 
+export const metadata = {
+  title: "Register",
+};
+
 const RegisterPage = () => {
   return (
     <div className="bg-primary-100">

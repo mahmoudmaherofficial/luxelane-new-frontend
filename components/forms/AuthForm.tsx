@@ -39,7 +39,7 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
         await login(data);
         toast.success("Logged in successfully");
       }
-      redirect("/");
+      window.location.replace("/");
     } catch (error: any) {
       toast.error(error.response?.data?.error);
     }

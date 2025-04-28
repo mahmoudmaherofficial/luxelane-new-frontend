@@ -68,10 +68,9 @@ const MainNavbar = () => {
   }, [isDropdownOpen, isMobileMenuOpen]);
 
   // Dropdown menu items
-  const menuItems = [
-    { href: user ? "/profile" : "/login", label: user ? "Profile" : "Login" },
-    ...(user ? [] : [{ href: "/register", label: "Register" }]),
-  ];
+  const menuItems = user
+    ? [{ href: "/profile", label: "Profile" }, { href: "/logout", label: "Logout" }]
+    : [{ href: "/login", label: "Login" }, { href: "/register", label: "Register" }];
 
   return (
     <motion.header
