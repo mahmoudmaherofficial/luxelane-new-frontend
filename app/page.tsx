@@ -7,9 +7,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import Slider from "react-slick";
-import "@/app/styles/slick-custom.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "@/app/styles/slick-custom.css";
 
 const HomePage = () => {
   const { user, loading } = useAccountContext();
@@ -100,10 +100,7 @@ const HomePage = () => {
             initial={{ y: 30, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.6 }}>
-            <Button
-              onClick={handleShopNow}
-              size="lg"
-              className="bg-[#D4AF37] text-[#1E293B] hover:bg-[#C19A2E] transition-colors">
+            <Button onClick={handleShopNow} size="lg">
               Discover Now
             </Button>
           </motion.div>
@@ -117,7 +114,7 @@ const HomePage = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="text-3xl md:text-4xl font-bold mb-12 text-center">
+            className="text-3xl md:text-4xl font-bold mb-12 text-center text-primary-900">
             Our Favorites
           </motion.h2>
           {loading ? (
@@ -161,7 +158,7 @@ const HomePage = () => {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             transition={{ duration: 0.6 }}
-            className="text-3xl md:text-4xl font-bold mb-12 text-center">
+            className="text-3xl md:text-4xl font-bold mb-12 text-center text-primary-900">
             Shop Your Style
           </motion.h2>
           <div className="flex flex-wrap justify-center gap-8">
@@ -173,7 +170,7 @@ const HomePage = () => {
                 className="flex flex-col items-center">
                 <Link
                   href={`/shop?category=${category.toLowerCase()}`}
-                  className="w-24 h-24 md:w-32 md:h-32 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-primary-100 transition-colors"
+                  className="w-24 h-24 md:w-32 p-2 md:h-32 bg-white rounded-full flex items-center justify-center shadow-md hover:bg-primary-100 transition-colors"
                   aria-label={`Shop ${category}`}>
                   <span className="text-primary-900 font-semibold text-lg overflow-hidden whitespace-nowrap text-ellipsis">
                     {category}
@@ -191,17 +188,19 @@ const HomePage = () => {
         whileInView={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
         className="py-12 bg-black border-t">
-        <div className="container mx-auto px-4 text-center">
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="container mx-auto px-4 text-center">
           <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">Stay in Style with LuxeLane</h2>
           <p className="text-primary-200 mb-6 max-w-lg mx-auto">
             {user ? "Explore your personalized fashion journey." : "Join our community for exclusive offers."}
           </p>
-          <Button
-            onClick={() => router.push(user ? "/profile" : "/register")}
-            className="bg-[#D4AF37] text-[#1E293B] hover:bg-[#C19A2E] transition-colors">
+          <Button onClick={() => router.push(user ? "/profile" : "/register")}>
             {user ? "Go to Profile" : "Join Now"}
           </Button>
-        </div>
+        </motion.div>
       </motion.section>
     </main>
   );
