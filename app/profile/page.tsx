@@ -1,8 +1,110 @@
+"use client";
+import BASE_URL from "@/api/BASE_URL";
+import Button from "@/components/ui/Button";
+import api from "@/lib/axiosInterseptor";
+import { User } from "@/types";
+// import Loader from "@/components/Loader";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+import Cookies from "js-cookie";
+import Swal from "sweetalert2";
+import { deleteAccount } from "@/api/account";
 
 const ProfilePage = () => {
-  
+  const [user, setUser] = useState<User>();
+  const handleDeleteAccount = async () => {
+    // try {
+    //   await api.delete("/account");
+    //   console.log("Account deleted successfully");
+    //   Cookies.remove("accessToken");
+    //   Cookies.remove("refreshToken");
+    //   window.location.href = "/login";
+    // } catch (error) {
+    //   console.error("Delete account error:", error);
+    // }
+    const { value: inputValue } = await Swal.fire({
+      title: `Enter "${user?.username}" to confirm deletion`,
+      input: "text",
+      inputAttributes: {
+        autocapitalize: "off",
+      },
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+      confirmButtonColor: "#d33",
+      showLoaderOnConfirm: true,
+      preConfirm: (input) => {
+        if (!input) {
+          Swal.showValidationMessage("Please enter your username");
+          return false;
+        } else if (input !== user?.username) {
+          Swal.showValidationMessage("Wrong username");
+          return false;
+        }
+        return true;
+      },
+      allowOutsideClick: () => !Swal.isLoading(),
+    });
 
-  return <div>Profile</div>;
+    if (inputValue) {
+      try {
+        await deleteAccount();
+        Swal.fire("Account deleted successfully");
+        Cookies.remove("accessToken");
+        Cookies.remove("refreshToken");
+        window.location.replace("/");
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error", "Failed to delete account", "error");
+      }
+    }
+  }; // handleDeleteAccount
+  const roleMap = {
+    1995: "Admin",
+    1996: "Seller",
+    2004: "User",
+  };
+  useEffect(() => {
+    api
+      .get("/account")
+      .then((res) => setUser(res.data))
+      .catch((err) => console.log(err));
+  }, []);
+
+  return (
+    <div className="container">
+      <h1 className="text-4xl font-bold mb-4 mt-16 text-center">Your Profile</h1>
+      <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
+        <div className="md:flex">
+          <div className="md:flex-shrink-0">
+            <img
+              className="h-80 md:h-48 w-full object-cover md:w-48 select-none"
+              src={`${user?.image ? BASE_URL.replace("/api", "") + user?.image : "/images/default-profile.jpg"}`}
+              alt={user?.username || "Profile Image"}
+              loading="lazy"
+            />
+          </div>
+          <div className="p-8">
+            <div className="tracking-wide text-xl text-slate-900 font-semibold">{user?.username || "Unknown User"}</div>
+            <p className="block mt-1 text-md leading-tight font-medium text-gray-500">
+              {user?.email || "No Email Available"}
+            </p>
+            <p className="mt-4 text-gray-500">
+              LuxeLane {roleMap[user?.role as keyof typeof roleMap] || "Unknown Role"}
+            </p>
+          </div>
+        </div>
+      </div>
+      <div className="flex justify-center mt-4 max-w-md gap-4 md:max-w-2xl mx-auto">
+        <Button>
+          <Link href="/profile/edit">Edit Profile</Link>
+        </Button>
+
+        <Button variant="danger" onClick={() => handleDeleteAccount()}>
+          Delete Account
+        </Button>
+      </div>
+    </div>
+  );
 };
 
 export default ProfilePage;

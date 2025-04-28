@@ -1,9 +1,10 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
 import refreshAccessToken from "./refreshToken";
+import BASE_URL from "@/api/BASE_URL";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: BASE_URL,
   withCredentials: true,
 });
 

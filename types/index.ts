@@ -44,3 +44,11 @@ export interface InputProps {
 export interface RefreshTokenResponse {
   accessToken?: string;
 }
+
+export interface User {
+  _id: number;
+  username: string;
+  email: string;
+  image: string;
+  role: number;
+}
