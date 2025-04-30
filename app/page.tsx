@@ -66,13 +66,13 @@ const HomePage = () => {
   };
 
   return (
-    <main className="text-slate-900 bg-[#F8FAFC]">
+    <main className="text-primary-900 bg-white">
       {/* Full-Screen Hero */}
       <motion.section
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="relative h-screen flex items-center select-none justify-center text-white">
+        className="relative h-[calc(100vh-74px)] flex items-center select-none justify-center text-white">
         <Image
           src="/images/hero.webp"
           alt="LuxeLane Fashion"
@@ -123,7 +123,7 @@ const HomePage = () => {
             Our Favorites
           </motion.h2>
           {loading ? (
-            <p className="text-center text-[#4B5563]">Loading...</p>
+            <p className="text-center text-primary-900">Loading...</p>
           ) : (
             <Slider {...sliderSettings} className="mx-4">
               {featuredProducts.map((product) => (
@@ -133,7 +133,7 @@ const HomePage = () => {
                   whileInView={{ scale: 1, opacity: 1 }}
                   transition={{ duration: 0.5 }}
                   className="px-4">
-                  <div className="border border-[#EDE9FE] rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow bg-white">
+                  <div className="border border-primary-50 rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-shadow bg-white">
                     <Image
                       src={product.image}
                       alt={product.name}
@@ -143,8 +143,8 @@ const HomePage = () => {
                       loading="lazy"
                     />
                     <div className="p-6">
-                      <h3 className="text-xl font-semibold text-[#1E293B]">{product.name}</h3>
-                      <p className="text-[#4B5563]">${product.price.toFixed(2)}</p>
+                      <h3 className="text-xl font-semibold text-primary-900">{product.name}</h3>
+                      <p className="text-primary-500">${product.price.toFixed(2)}</p>
                       <Link href={`/products/${product.id}`}>
                         <Button className="mt-4 w-full">Shop Now</Button>
                       </Link>
