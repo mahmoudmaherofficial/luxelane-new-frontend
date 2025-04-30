@@ -25,7 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css" />
       </head>
-      <body className={merriweather.className}>
+      <body className={merriweather.className + " overflow-x-hidden"}>
         <AccountProvider>
           <MainNavbarWrapper>
             <main>

@@ -72,13 +72,13 @@ const HomePage = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
-        className="relative h-screen flex items-center justify-center text-white">
+        className="relative h-screen flex items-center select-none justify-center text-white">
         <Image
           src="/images/hero.webp"
           alt="LuxeLane Fashion"
           fill
           priority
-          className="brightness-40 select-none"
+          className="brightness-40 h-screen w-full object-cover"
         />
         <div className="absolute text-center">
           <motion.h1
@@ -93,9 +93,13 @@ const HomePage = () => {
             animate={{ y: 0, opacity: 1, width: "100%" }}
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto overflow-hidden">
-            <span className="whitespace-nowrap overflow-hidden inline-block ">
-              {user ? `Hello, ${user.username}! ` : ""}Curated elegance for every style.
-            </span>
+            {user && (
+              <>
+                <span className="whitespace-nowrap overflow-hidden inline-block">{`Hello, ${user.username} ! `}</span>
+                <br />
+              </>
+            )}
+            <span className="whitespace-nowrap overflow-hidden inline-block">Curated elegance for every style.</span>
           </motion.p>
           <motion.div
             initial={{ y: 30, opacity: 0 }}
