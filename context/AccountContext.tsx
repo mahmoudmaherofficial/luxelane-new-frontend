@@ -2,7 +2,7 @@
 "use client";
 import { createContext, useContext, ReactNode } from "react";
 import useAccount from "@/hooks/useAccount"; // Your custom hook
-import { AccountContextType} from "@/types";
+import { AccountContextType, User} from "@/types";
 
 
 const AccountContext = createContext<AccountContextType | undefined>(undefined);

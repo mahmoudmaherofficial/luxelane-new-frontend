@@ -58,3 +58,31 @@ export interface AccountContextType {
   user: User | undefined;
   loading: boolean;
 }
+
+export interface EditProfileFormData {
+  username: string;
+  email: string;
+}
+
+export interface DashboardNavbarProps {
+  toggleSidebar: (value: boolean | ((prev: boolean) => boolean)) => void;
+  className?: string;
+}
+
+export interface DashboardSidebarProps {
+  isOpen: boolean;
+  toggleSidebar: (value: boolean | ((prev: boolean) => boolean)) => void;
+  className?: string;
+}
+
+export interface DashboardNavItem {
+  name: string;
+  Icon: any;
+  href: string;
+  allowedRoles: number[];
+}
+
+export interface dropdownMenuItem {
+  href: string;
+  label: string;
+}

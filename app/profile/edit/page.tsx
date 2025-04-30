@@ -6,15 +6,12 @@ import { toast } from "react-toastify";
 import Input from "@/components/ui/Input";
 import Loader from "@/components/ui/Loader";
 import { useAccountContext } from "@/context/AccountContext";
+import { EditProfileFormData } from "@/types";
 
 const EditProfilePage = () => {
   const { user, loading } = useAccountContext();
-  interface FormData {
-    username: string;
-    email: string;
-  }
 
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<EditProfileFormData>({
     username: "",
     email: "",
   });

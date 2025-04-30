@@ -1,3 +1,4 @@
+// api/account.ts
 import api from "@/lib/axiosInterseptor"
 
 export const getAccount = () => api.get("/account");

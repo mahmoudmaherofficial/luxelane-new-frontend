@@ -15,19 +15,19 @@ const HomePage = () => {
   const { user, loading } = useAccountContext();
   const router = useRouter();
   const [featuredProducts, setFeaturedProducts] = useState([
-    { id: 1, name: "Elegant Dress", price: 89.99, image: "/images/dress.jpg" },
+    { id: 1, name: "Elegant Dress", price: 89.99, image: "/images/dress.webp" },
     { id: 2, name: "Casual Jacket", price: 59.99, image: "/images/jacket.jpg" },
     {
       id: 3,
       name: "Stylish Sneakers",
       price: 79.99,
-      image: "/images/sneakers.jpg",
+      image: "/images/sneakers.webp",
     },
     {
       id: 4,
       name: "Chic Handbag",
       price: 129.99,
-      image: "/images/handbag.jpg",
+      image: "/images/handbag.avif",
     },
   ]);
 
@@ -76,8 +76,7 @@ const HomePage = () => {
         <Image
           src="/images/hero.webp"
           alt="LuxeLane Fashion"
-          layout="fill"
-          objectFit="cover"
+          fill
           priority
           className="brightness-40 select-none"
         />
@@ -90,11 +89,13 @@ const HomePage = () => {
             LuxeLane
           </motion.h1>
           <motion.p
-            initial={{ y: 30, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
+            initial={{ y: 30, opacity: 0, width: 0 }}
+            animate={{ y: 0, opacity: 1, width: "100%" }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto">
-            {user ? `Hello, ${user.username}! ` : ""}Curated elegance for every style.
+            className="text-xl md:text-2xl mb-8 max-w-2xl mx-auto overflow-hidden">
+            <span className="whitespace-nowrap overflow-hidden inline-block ">
+              {user ? `Hello, ${user.username}! ` : ""}Curated elegance for every style.
+            </span>
           </motion.p>
           <motion.div
             initial={{ y: 30, opacity: 0 }}
@@ -135,6 +136,7 @@ const HomePage = () => {
                       width={320}
                       height={400}
                       className="w-full h-64 object-cover"
+                      loading="lazy"
                     />
                     <div className="p-6">
                       <h3 className="text-xl font-semibold text-[#1E293B]">{product.name}</h3>
@@ -189,7 +191,7 @@ const HomePage = () => {
         transition={{ duration: 0.8 }}
         className="py-12 bg-black border-t">
         <motion.div
-          initial={{ y: 20, opacity: 0 }}
+          initial={{ y: -20, opacity: 0 }}
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
           className="container mx-auto px-4 text-center">

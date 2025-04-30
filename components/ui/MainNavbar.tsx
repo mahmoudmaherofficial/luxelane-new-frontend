@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Button from "./Button";
 import { useAccountContext } from "@/context/AccountContext";
+import { dropdownMenuItem } from "@/types";
 
 const MainNavbar = () => {
   const router = useRouter();
@@ -67,10 +68,18 @@ const MainNavbar = () => {
     };
   }, [isDropdownOpen, isMobileMenuOpen]);
 
+
   // Dropdown menu items
-  const menuItems = user
-    ? [{ href: "/profile", label: "Profile" }, { href: "/logout", label: "Logout" }]
-    : [{ href: "/login", label: "Login" }, { href: "/register", label: "Register" }];
+  const dropdownMenuItems: dropdownMenuItem[] = user
+    ? ([
+        [1995, 1996].includes(user?.role) && { href: "/dashboard", label: "Dashboard" },
+        { href: "/profile", label: "Profile" },
+        { href: "/logout", label: "Logout" },
+      ].filter(Boolean) as dropdownMenuItem[])
+    : [
+        { href: "/login", label: "Login" },
+        { href: "/register", label: "Register" },
+      ];
 
   return (
     <motion.header
@@ -127,7 +136,7 @@ const MainNavbar = () => {
                   exit={{ opacity: 0, y: -10 }}
                   transition={{ duration: 0.2 }}
                   className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-md py-2 z-50">
-                  {menuItems.map((item) => (
+                  {dropdownMenuItems.map((item) => (
                     <li key={item.href}>
                       <Link
                         href={item.href}
@@ -177,7 +186,7 @@ const MainNavbar = () => {
             transition={{ duration: 0.3 }}
             className="md:hidden bg-white shadow-md">
             <ul className="container mx-auto px-4 py-4 flex flex-col gap-4">
-              {menuItems.map((item) => (
+              {dropdownMenuItems.map((item) => (
                 <li key={item.href}>
                   <Link
                     href={item.href}
