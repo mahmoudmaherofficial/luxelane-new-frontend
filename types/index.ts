@@ -44,7 +44,7 @@ export interface InputProps {
   label?: string;
 }
 export interface RefreshTokenResponse {
-  accessToken?: string;
+  accessToken?: string | undefined;
 }
 
 export interface User {

@@ -215,118 +215,47 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get("accessToken")?.value;
   const refreshToken = request.cookies.get("refreshToken")?.value;
+  const response = NextResponse.next();
 
-  // Handle /login and /register routes
   if (pathname.startsWith("/login") || pathname.startsWith("/register")) {
     if (accessToken || refreshToken) {
-      return NextResponse.redirect(new URL("/", request.nextUrl));
+      return NextResponse.redirect(new URL("/", request.url));
     }
     return NextResponse.next();
   }
 
-  // Handle /logout route
   if (pathname.startsWith("/logout")) {
     if (!accessToken && !refreshToken) {
-      return NextResponse.redirect(new URL("/", request.nextUrl));
+      return NextResponse.redirect(new URL("/", request.url));
     }
     return NextResponse.next();
   }
 
-  // Handle /profile routes
   if (pathname.startsWith("/profile")) {
-    return handleProfileRoutes(request, accessToken, refreshToken);
-  }
-
-  // Handle /dashboard routes
-  if (pathname.startsWith("/dashboard")) {
-    return handleDashboardRoutes(request, accessToken, refreshToken);
-  }
-
-  // Default: Proceed for other routes
-  return NextResponse.next();
-}
-
-async function handleAuth(
-  request: NextRequest,
-  accessToken?: string,
-  refreshToken?: string
-): Promise<NextResponse | string> {
-  if (!accessToken) {
-    const response = NextResponse.redirect(new URL("/login", request.nextUrl));
-    response.cookies.delete("refreshToken");
-
-    if (refreshToken) {
+    console.log("Middleware: Handling /profile route");
+    if (!accessToken && refreshToken) {
+      console.log("Middleware: No access token but refresh token exists, attempting refresh");
       try {
-        const newAccessToken = await refreshAccessToken(refreshToken);
-        response.cookies.set("accessToken", newAccessToken, {
-          secure: process.env.NODE_ENV === "production",
-          sameSite: "strict",
-          path: "/",
-          maxAge: 15 * 60, // 15 minutes
-        });
-        return newAccessToken;
-      } catch {
-        return response;
+        await refreshAccessToken();
+        console.log("Middleware: Successfully refreshed access token");
+      } catch (error) {
+        console.error("Middleware: Failed to refresh access token", error);
+        response.cookies.delete("refreshToken");
+        return NextResponse.redirect(new URL("/login", request.url));
       }
     }
+
+    if (!accessToken) {
+      console.log("Middleware: No access token available, redirecting to login");
+      response.cookies.delete("refreshToken");
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    console.log("Middleware: Access granted for /profile");
     return response;
   }
-  return accessToken;
-}
 
-async function handleProfileRoutes(
-  request: NextRequest,
-  accessToken?: string,
-  refreshToken?: string
-): Promise<NextResponse> {
-  const result = await handleAuth(request, accessToken, refreshToken);
-  return typeof result === "string" ? NextResponse.next() : result;
-}
-
-async function handleDashboardRoutes(
-  request: NextRequest,
-  accessToken?: string,
-  refreshToken?: string
-): Promise<NextResponse> {
-  const result = await handleAuth(request, accessToken, refreshToken);
-  if (typeof result !== "string") return result;
-
-  try {
-    const accountResponse = await fetch(`${BASE_URL}/account`, {
-      headers: { Authorization: `Bearer ${result}` },
-      credentials: "include",
-    });
-
-    if (!accountResponse.ok) {
-      if (accountResponse.status === 401) {
-        const response = NextResponse.redirect(new URL("/login", request.nextUrl));
-        response.cookies.delete("refreshToken");
-        return response;
-      }
-      return NextResponse.redirect(new URL("/403", request.nextUrl));
-    }
-
-    const user = await accountResponse.json();
-    const userRole = user?.role;
-
-    if (userRole === undefined || userRole === null) {
-      return NextResponse.redirect(new URL("/403", request.nextUrl));
-    }
-
-    const matchedNavItem = dashboardNavItems.find(
-      (item) =>
-        new URL(item.href, request.nextUrl).pathname === request.nextUrl.pathname &&
-        item.allowedRoles.includes(userRole)
-    );
-
-    if (!matchedNavItem) {
-      return NextResponse.redirect(new URL("/403", request.nextUrl));
-    }
-
-    return NextResponse.next();
-  } catch {
-    return NextResponse.redirect(new URL("/403", request.nextUrl));
-  }
+  return response;
 }
 
 export const config = {

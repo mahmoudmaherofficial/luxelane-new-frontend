@@ -4,18 +4,24 @@ import { RefreshTokenResponse } from "@/types";
 import axios from "axios";
 
 // Reusable function to refresh access token
-export default async function refreshAccessToken(refreshToken: any): Promise<string> {
+export default async function refreshAccessToken(): Promise<string | undefined> {
   try {
+    const res = await axios.post(`${BASE_URL}/auth/refresh-token`, {}, {
+      withCredentials: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      }
+    });
+    console.log('res', res);
 
-    const res = await axios.post(`${BASE_URL}/auth/refresh-token`, { refreshToken });
+    const { accessToken }: RefreshTokenResponse = res.data;
 
-    const data: RefreshTokenResponse = res.data;
+    // if (!accessToken) {
+    //   throw new Error("No access token returned");
+    // }
 
-    if (!data.accessToken) {
-      throw new Error("No access token returned");
-    }
-
-    return data.accessToken;
+    return accessToken;
   } catch (error) {
     throw new Error("Failed to refresh token");
   }

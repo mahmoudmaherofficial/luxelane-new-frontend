@@ -11,11 +11,10 @@ const api = axios.create({
 
 api.interceptors.request.use(async (config) => {
   const accessToken = Cookies.get("accessToken");
-  const refreshToken = Cookies.get("refreshToken");
-  if (!accessToken && refreshToken) {
+  if (!accessToken) {
     try {
-      const newAccessToken = await refreshAccessToken(refreshToken)
-      Cookies.set("accessToken", newAccessToken, { expires: 1 / (60 * 24) });
+      console.log('refreshing access token');
+      const newAccessToken = await refreshAccessToken()
       config.headers.Authorization = `Bearer ${newAccessToken}`;
       return config;
     } catch (error) {
