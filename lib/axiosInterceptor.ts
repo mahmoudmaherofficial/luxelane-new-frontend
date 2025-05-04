@@ -1,4 +1,4 @@
-// lib/axiosInterseptor.ts
+// lib/axiosInterceptor.ts
 import axios from "axios";
 import Cookies from 'js-cookie';
 import refreshAccessToken from "./refreshToken";

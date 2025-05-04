@@ -1,6 +1,6 @@
 "use client";
 import { getAllUsers } from "@/api/users";
-import api from "@/lib/axiosInterseptor";
+import api from "@/lib/axiosInterceptor";
 import { User } from "@/types";
 import { PencilIcon, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -57,7 +57,7 @@ const UsersPage = () => {
   );
 
   return (
-    <div >
+    <div>
       <h1 className="text-3xl md:text-4xl font-bold text-primary-900 mb-4">Users</h1>
       <DataTable
         data={users}

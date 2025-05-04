@@ -29,13 +29,19 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
-    const data = Object.fromEntries(formData);
 
     try {
       if (type === "register") {
+        // Convert username and email to lowercase for register
+        const username = formData.get('username')?.toString().toLowerCase();
+        const email = formData.get('email')?.toString().toLowerCase();
+        if (username) formData.set('username', username);
+        if (email) formData.set('email', email);
+        
         await register(formData);
         toast.success("Account created successfully");
       } else if (type === "login") {
+        const data = Object.fromEntries(formData);
         await login(data);
         toast.success("Logged in successfully");
       }
@@ -59,6 +65,7 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
               accept={field.accept}
               minLength={field.minLength}
               label={field.label ? field.label : field.name}
+              className={field.name === "username" || field.name === "email" ? "lowercase" : ""}
             />
           ))}
 
@@ -67,9 +74,7 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
           </Button>
 
           <p className="text-center text-slate-500">
-            {linkText}{
-  " "
-}
+            {linkText}{" "}
             <Link href={linkUrl} className="text-sky-500 hover:text-sky-400 transition-all capitalize">
               {linkUrl.split("/").pop()}
             </Link>
