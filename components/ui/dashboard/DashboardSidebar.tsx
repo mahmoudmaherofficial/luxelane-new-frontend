@@ -1,3 +1,4 @@
+// TODO: Fix the sidebar not being tablet responsive
 "use client";
 import dashboardNavItems from "@/constants/DashboardNavLinks";
 
@@ -20,12 +21,14 @@ const NavItem = memo(
     isExpanded,
     isPinned,
     handleCloseSidebar,
+    isMobile,
   }: {
     item: any;
     path: string;
     isExpanded: boolean;
     isPinned: boolean;
     handleCloseSidebar: () => void;
+    isMobile: boolean;
   }) => {
     const isActive = path.split("/")[2] === item.href.split("/")[2];
 
@@ -33,28 +36,28 @@ const NavItem = memo(
     const linkClassName = useMemo(() => {
       return `flex items-center p-3 mb-2 hover:bg-white hover:text-primary-800 hover:translate-x-1 rounded-md transition-all duration-200 ${
         isActive ? "bg-white text-primary-800" : ""
-      } ${!isExpanded && !isPinned ? "md:justify-center" : ""} relative overflow-hidden group`;
-    }, [isActive, isExpanded, isPinned]);
+      } ${!isExpanded && !isPinned && !isMobile ? "md:justify-center" : ""} ${isMobile ? "justify-start" : ""} relative overflow-hidden group`;
+    }, [isActive, isExpanded, isPinned, isMobile]);
 
     const iconContainerClassName = useMemo(() => {
       return `transform transition-all duration-300 ${
-        isExpanded || isPinned ? "mr-3" : "mx-auto"
-      } relative flex items-center justify-center ${!isExpanded && !isPinned ? "w-full" : ""}`;
-    }, [isExpanded, isPinned]);
+        isExpanded || isPinned || isMobile ? "mr-3" : "mx-auto"
+      } relative flex items-center justify-center ${!isExpanded && !isPinned && !isMobile ? "w-full" : ""}`;
+    }, [isExpanded, isPinned, isMobile]);
 
     const iconClassName = useMemo(() => {
       return `${isActive ? "text-primary-800" : "group-hover:scale-110 transition-transform duration-200"} ${
-        !isExpanded && !isPinned ? "scale-110" : ""
+        !isExpanded && !isPinned && !isMobile ? "scale-110" : ""
       }`;
-    }, [isActive, isExpanded, isPinned]);
+    }, [isActive, isExpanded, isPinned, isMobile]);
 
     const textClassName = useMemo(() => {
       return `truncate transition-all duration-300 ${
-        !isExpanded && !isPinned
+        !isExpanded && !isPinned && !isMobile
           ? "md:opacity-0 md:w-0 md:absolute md:pointer-events-none"
           : "md:opacity-100 md:w-auto md:relative"
-      }`;
-    }, [isExpanded, isPinned]);
+      } ${isMobile ? "opacity-100 w-auto" : ""}`;
+    }, [isExpanded, isPinned, isMobile]);
 
     return (
       <Link key={item.name} href={item.href} className={linkClassName} onClick={handleCloseSidebar}>
@@ -246,9 +249,10 @@ const DashboardSidebar = ({ isOpen, toggleSidebar, className, onStateChange }: D
         isExpanded={isExpanded}
         isPinned={isPinned}
         handleCloseSidebar={handleCloseSidebar}
+        isMobile={isMobile}
       />
     ));
-  }, [filteredNavItems, path, isExpanded, isPinned, handleCloseSidebar]);
+  }, [filteredNavItems, path, isExpanded, isPinned, handleCloseSidebar, isMobile]);
 
   return (
     <section
@@ -286,7 +290,7 @@ const DashboardSidebar = ({ isOpen, toggleSidebar, className, onStateChange }: D
         <nav
           className={`flex-1 bg-primary-800 bg-opacity-70 rounded-lg p-2 overflow-y-auto custom-scrollbar transition-all duration-300 ${
             !isExpanded && !isPinned ? "md:px-1" : ""
-          }`}>
+          } ${isMobile ? "h-full max-h-[calc(100vh-120px)]" : ""}`}>
           {navItems}
         </nav>
       </div>

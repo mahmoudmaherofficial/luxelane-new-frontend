@@ -152,8 +152,23 @@
   }
   
   /* Ensure the content is correctly positioned */
-  .fixed.translate-x-0 + div {
+  .fixed.transform.translate-x-0 + div {
     z-index: -1;
+  }
+  
+  /* Mobile nav positioning */
+  .sidebar-mobile-open nav {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 120px);
+    max-height: calc(100vh - 120px);
+    overflow-y: auto;
+  }
+  
+  /* Mobile nav items */
+  .sidebar-mobile-open nav a {
+    margin-bottom: 8px;
+    width: 100%;
   }
 }
 

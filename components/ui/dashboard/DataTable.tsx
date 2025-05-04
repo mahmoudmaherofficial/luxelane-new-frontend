@@ -38,9 +38,7 @@ function TableRow<T>({
 }) {
   return (
     <tr
-      className={`transition-all duration-200 ${
-        isEven ? "bg-white" : "bg-primary-50"
-      } hover:bg-dusty-rose hover:bg-opacity-20`}>
+      className={`transition-all duration-200 ${isEven ? "bg-white" : "bg-primary-50"} hover:bg-dusty-rose hover:bg-opacity-20`}>
       {columns.map((column) => (
         <td key={column.key} className="px-3 py-2 sm:px-4 sm:py-3 text-base">
           {column.key === "role"
