@@ -4,7 +4,7 @@ import "./styles/globals.css";
 import "./styles/tailwind.css";
 import { ToastContainer } from "react-toastify";
 import { AccountProvider } from "@/context/AccountContext";
-import MainNavbarWrapper from "@/components/ui/MainNavbarWrapper";
+import MainNavbarWrapper from "@/components/wrappers/MainNavbarWrapper";
 
 const merriweather = Merriweather_Sans({
   subsets: ["latin"],

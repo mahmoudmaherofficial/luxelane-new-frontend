@@ -1,15 +1,39 @@
-"use client"
+"use client";
 import { DashboardNavbarProps } from "@/types";
-import { Menu, User } from "lucide-react";
+import { Menu, User, Bell, Search, Settings } from "lucide-react";
 import Link from "next/link";
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
+import { useAccountContext } from "@/context/AccountContext";
 
-
-export default function DashboardNavbar({ toggleSidebar, className }: DashboardNavbarProps) {
+export default function DashboardNavbar({ toggleSidebar, className, isSidebarOpen }: DashboardNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const { user } = useAccountContext();
+  const [isMobile, setIsMobile] = useState(false);
 
-  // Handle clicks outside the dropdown to close it
+  // Handle resize to detect mobile view - optimized with throttling
+  useEffect(() => {
+    let resizeTimer: NodeJS.Timeout | null = null;
+
+    const handleResize = () => {
+      if (resizeTimer) return;
+
+      resizeTimer = setTimeout(() => {
+        setIsMobile(window.innerWidth < 1024); // Show on tablet too (< 1024px)
+        resizeTimer = null;
+      }, 100);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      if (resizeTimer) clearTimeout(resizeTimer);
+    };
+  }, []);
+
+  // Handle clicks outside dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -18,49 +42,93 @@ export default function DashboardNavbar({ toggleSidebar, className }: DashboardN
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isMenuOpen]);
 
+  const handleSidebarToggle = useCallback(() => {
+    toggleSidebar((prev: boolean) => !prev);
+  }, [toggleSidebar]);
+
   return (
-    <nav className={`flex items-center justify-between p-4 ${className}`}>
-      <div className="flex items-center space-x-4">
-        <button
-          onClick={() => toggleSidebar((prev: boolean) => !prev)}
-          className="md:hidden text-white hover:text-dusty-rose focus:outline-none transform hover:scale-110 transition-transform duration-200"
-          aria-label="Toggle sidebar">
-          <Menu size={24} />
-        </button>
-        <h1 className="text-xl md:text-2xl font-semibold text-soft-ivory">LuxeLane Dashboard</h1>
-      </div>
-      <div className="relative" ref={menuRef}>
-        <button
-          onClick={() => setIsMenuOpen((prev) => !prev)}
-          className="p-2 rounded-full hover:bg-muted-teal hover:text-white transform hover:scale-110 transition-all duration-200"
-          aria-label="User menu">
-          <User size={24} />
-        </button>
-        {isMenuOpen && (
-          <div
-            className="absolute right-0 mt-2 w-48 bg-black text-soft-ivory rounded-md shadow-md py-2 z-50 transition-all duration-200 transform origin-top-right scale-95 opacity-0 md:scale-100 md:opacity-100"
-            style={{
-              animation: isMenuOpen ? "dropdownOpen 0.2s ease-out forwards" : "dropdownClose 0.2s ease-out forwards",
-            }}>
-            <Link
-              href="/profile"
-              className="block px-4 py-2 hover:bg-muted-teal hover:text-white transition-colors duration-200"
-              onClick={() => setIsMenuOpen(false)}>
-              Profile
-            </Link>
-            <Link
-              href="/logout"
-              className="block px-4 py-2 hover:bg-muted-teal hover:text-white transition-colors duration-200"
-              onClick={() => setIsMenuOpen(false)}>
-              Logout
-            </Link>
-          </div>
+    <nav className={`flex bg-primary-900 items-center justify-between p-3 ${className} shadow-md z-50`}>
+      <div className="flex items-center space-x-3">
+        {isMobile && (
+          <button
+            onClick={handleSidebarToggle}
+            className="text-soft-ivory p-2 hover:text-dusty-rose focus:outline-none transform hover:scale-105 active:scale-95 transition-all duration-200 rounded-full hover:bg-primary-800"
+            aria-label="Toggle sidebar">
+            <Menu size={20} />
+          </button>
         )}
+        <h1 className="text-xl md:text-2xl font-semibold text-soft-ivory tracking-wide">
+          <span className="hidden md:inline">LuxeLane</span> Dashboard
+        </h1>
+      </div>
+
+      <div className="flex items-center space-x-2">
+        {/* Search button - visible on larger screens */}
+        <div className="hidden md:flex items-center bg-primary-800 bg-opacity-50 rounded-full px-3 py-1.5 text-soft-ivory">
+          <Search size={16} className="mr-2 text-gray-400" />
+          <input
+            type="text"
+            placeholder="Search..."
+            className="bg-transparent border-none focus:outline-none text-sm w-28 lg:w-36 text-soft-ivory placeholder-gray-400"
+          />
+        </div>
+
+        {/* Notifications */}
+        <button
+          className="relative p-2 text-soft-ivory hover:text-dusty-rose focus:outline-none transform hover:scale-105 active:scale-95 transition-all duration-200 rounded-full hover:bg-primary-800"
+          aria-label="Notifications">
+          <Bell size={20} />
+          <span className="absolute top-0 right-0 flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-dusty-rose opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-dusty-rose"></span>
+          </span>
+        </button>
+
+        {/* User menu */}
+        <div className="relative" ref={menuRef}>
+          <button
+            onClick={() => setIsMenuOpen((prev) => !prev)}
+            className="p-2 rounded-full hover:bg-primary-800 text-soft-ivory transform hover:scale-105 active:scale-95 transition-all duration-200 flex items-center space-x-2"
+            aria-label="User menu">
+            <User size={20} />
+            <span className="hidden md:inline text-sm font-medium">{user?.username || "User"}</span>
+          </button>
+          {isMenuOpen && (
+            <div
+              className="absolute right-0 mt-2 w-48 bg-primary-900 text-soft-ivory rounded-lg shadow-lg py-2 z-50 custom-scrollbar"
+              style={{
+                animation: "fadeIn 0.2s ease-out forwards",
+              }}>
+              <div className="px-4 py-2 border-b border-primary-800">
+                <p className="text-sm font-medium">{user?.username || "User"}</p>
+                <p className="text-xs text-gray-400">{user?.email || "user@example.com"}</p>
+              </div>
+              <Link
+                href="/profile"
+                className="block px-4 py-2 hover:bg-primary-800 hover:text-white transition-all duration-200 text-sm"
+                onClick={() => setIsMenuOpen(false)}>
+                Profile
+              </Link>
+              <Link
+                href="/settings"
+                className="block px-4 py-2 hover:bg-primary-800 hover:text-white transition-all duration-200 text-sm"
+                onClick={() => setIsMenuOpen(false)}>
+                Settings
+              </Link>
+              <div className="border-t border-primary-800 mt-1 pt-1">
+                <Link
+                  href="/logout"
+                  className="block px-4 py-2 hover:bg-primary-800 hover:text-dusty-rose transition-all duration-200 text-sm"
+                  onClick={() => setIsMenuOpen(false)}>
+                  Logout
+                </Link>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );

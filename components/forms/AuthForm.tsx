@@ -67,7 +67,9 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
           </Button>
 
           <p className="text-center text-slate-500">
-            {linkText}{" "}
+            {linkText}{
+  " "
+}
             <Link href={linkUrl} className="text-sky-500 hover:text-sky-400 transition-all capitalize">
               {linkUrl.split("/").pop()}
             </Link>

@@ -48,7 +48,7 @@ export interface RefreshTokenResponse {
 }
 
 export interface User {
-  _id: number;
+  _id: string;
   username: string;
   email: string;
   image: string;
@@ -67,12 +67,14 @@ export interface EditProfileFormData {
 export interface DashboardNavbarProps {
   toggleSidebar: (value: boolean | ((prev: boolean) => boolean)) => void;
   className?: string;
+  isSidebarOpen?: boolean;
 }
 
 export interface DashboardSidebarProps {
   isOpen: boolean;
   toggleSidebar: (value: boolean | ((prev: boolean) => boolean)) => void;
   className?: string;
+  onStateChange?: (isPinned: boolean, isExpanded: boolean) => void;
 }
 
 export interface DashboardNavItem {

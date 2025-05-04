@@ -1,6 +1,6 @@
 "use client";
 import { usePathname } from "next/navigation";
-import MainNavbar from "./MainNavbar";
+import MainNavbar from "../ui/MainNavbar";
 
 const MainNavbarWrapper = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
