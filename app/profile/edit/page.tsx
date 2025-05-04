@@ -7,6 +7,7 @@ import Input from "@/components/ui/Input";
 import Loader from "@/components/ui/Loader";
 import { useAccountContext } from "@/context/AccountContext";
 import { EditProfileFormData } from "@/types";
+import { AxiosError } from "axios";
 
 const EditProfilePage = () => {
   const { user, loading } = useAccountContext();
@@ -26,7 +27,7 @@ const EditProfilePage = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value,
+      [e.target.name]: e.target.value.toLowerCase(),
     });
   };
 
@@ -36,9 +37,9 @@ const EditProfilePage = () => {
       await updateAccount(formData);
       toast.success("Profile updated successfully!");
       window.location.replace("/profile");
-    } catch (err) {
-      console.error("Error updating profile:", err);
-      toast.error("Failed to update profile");
+    } catch (err:AxiosError | any) {
+      toast.error(err.response.data.error || "Failed to update profile");
+      // console.error("Error updating profile:", err);
     }
   };
 
@@ -49,13 +50,15 @@ const EditProfilePage = () => {
         <div className="p-6 max-w-xl mx-auto bg-white rounded-xl shadow-md text-slate-900 md:p-8">
           <h2 className="text-2xl font-bold mb-4">Edit Profile</h2>
           <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
-            <Input type="text" name="username" value={formData.username} onChange={handleChange} label="Username" />
+            <Input type="text" name="username" value={formData.username} onChange={handleChange} label="Username" className="lowercase" required />
             <Input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
               label="Email" // Corrected label from "Username" to "Email"
+              required
+              className="lowercase"
             />
             <Button type="submit" className="w-full md:w-auto">
               Update Profile

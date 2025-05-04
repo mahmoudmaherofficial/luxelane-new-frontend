@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import { deleteAccount } from "@/api/account";
 import Loader from "@/components/ui/Loader";
 import { useAccountContext } from "@/context/AccountContext";
+import siteName from "@/constants/mainInfo";
 
 
 const ProfilePage = () => {
@@ -78,7 +79,7 @@ const ProfilePage = () => {
                   {user?.email || "No Email Available"}
                 </p>
                 <p className="mt-4 text-gray-500">
-                  LuxeLane {roleMap[user?.role as keyof typeof roleMap] || "Unknown Role"}
+                  {siteName} {roleMap[user?.role as keyof typeof roleMap] || "Unknown Role"}
                 </p>
               </div>
             </div>

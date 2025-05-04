@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Button from "./Button";
 import { useAccountContext } from "@/context/AccountContext";
 import { dropdownMenuItem } from "@/types";
+import siteName from "@/constants/mainInfo";
 
 const MainNavbar = () => {
   const router = useRouter();
@@ -90,7 +91,7 @@ const MainNavbar = () => {
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold text-primary-500">
-          LuxeLane
+          {siteName}
         </Link>
 
         {/* Search Bar */}

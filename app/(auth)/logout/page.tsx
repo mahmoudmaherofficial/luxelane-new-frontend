@@ -3,38 +3,38 @@ import { useEffect, useState } from "react";
 import Button from "@/components/ui/Button";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
+import axios from "axios";
+import BASE_URL from "@/api/BASE_URL";
+import { useRouter } from "next/navigation";
 
-// Simulated logout API function (replace with your actual implementation)
 const logoutFn = async () => {
-  // Example: Make an API call to invalidate the session
-  await fetch("/api/logout", { method: "POST" });
+  await axios.post(`${BASE_URL}/auth/logout`, {}, { withCredentials: true });
   return { success: true };
 };
 
 const LogoutPage = () => {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState(null);
 
   const handleLogout = async () => {
     setLoading(true);
     setError(null);
     try {
       await logoutFn();
-      Cookies.remove("accessToken");
-      Cookies.remove("refreshToken");
-      window.location.replace("/");
+      Cookies.remove("accessToken"); // Remove only if accessToken is not httpOnly
     } catch (err) {
       console.error("Logout failed:", err);
-      setError("Failed to log out. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  // Automatically trigger logout on mount
   useEffect(() => {
-    handleLogout();
-  }, []); // Empty dependency array to run once on mount
+    handleLogout().then(() => {
+      window.location.replace("/");
+    });
+  }, []);
 
   return (
     <motion.div
@@ -53,9 +53,6 @@ const LogoutPage = () => {
             Try Again
           </Button>
         </div>
-      )}
-      {!loading && !error && (
-        <p className="text-primary-500 text-lg">You have been logged out. Redirecting to login...</p>
       )}
     </motion.div>
   );

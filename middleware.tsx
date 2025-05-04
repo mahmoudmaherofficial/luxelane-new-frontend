@@ -208,6 +208,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import refreshAccessToken from "./lib/refreshToken";
+import axios from "axios";
 import BASE_URL from "./api/BASE_URL";
 import dashboardNavItems from "./constants/DashboardNavLinks";
 
@@ -232,27 +233,57 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
   }
 
   if (pathname.startsWith("/profile")) {
-    console.log("Middleware: Handling /profile route");
     if (!accessToken && refreshToken) {
-      console.log("Middleware: No access token but refresh token exists, attempting refresh");
       try {
         await refreshAccessToken();
-        console.log("Middleware: Successfully refreshed access token");
       } catch (error) {
-        console.error("Middleware: Failed to refresh access token", error);
         response.cookies.delete("refreshToken");
         return NextResponse.redirect(new URL("/login", request.url));
       }
     }
 
     if (!accessToken) {
-      console.log("Middleware: No access token available, redirecting to login");
       response.cookies.delete("refreshToken");
       return NextResponse.redirect(new URL("/login", request.url));
     }
 
-    console.log("Middleware: Access granted for /profile");
     return response;
+  }
+
+  if (pathname.startsWith("/dashboard")) {
+    if (!accessToken && refreshToken) {
+      try {
+        await refreshAccessToken();
+      } catch (error) {
+        response.cookies.delete("refreshToken");
+        return NextResponse.redirect(new URL("/login", request.url));
+      }
+    }
+
+    if (!accessToken) {
+      response.cookies.delete("refreshToken");
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
+
+    try {
+      const res = await axios.get(`${BASE_URL}/account`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+
+      const matchedNavItem = dashboardNavItems.find((item) => {
+        const navPathname = new URL(item.href, request.nextUrl).pathname;
+        return navPathname === pathname && item.allowedRoles.includes(res.data.role);
+      });
+
+      if (!matchedNavItem) {
+        return NextResponse.redirect(new URL("/403", request.url)); // Keep your redirect to home
+      }
+
+      return response;
+    } catch (error) {
+      response.cookies.delete("refreshToken");
+      return NextResponse.redirect(new URL("/login", request.url));
+    }
   }
 
   return response;
