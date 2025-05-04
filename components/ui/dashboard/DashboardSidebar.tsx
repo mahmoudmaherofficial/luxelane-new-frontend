@@ -37,16 +37,22 @@ const NavItem = memo(
     }, [isActive, isExpanded, isPinned]);
 
     const iconContainerClassName = useMemo(() => {
-      return `transform transition-all duration-200 ${isExpanded || isPinned ? "mr-3" : "mr-2"} relative`;
+      return `transform transition-all duration-300 ${
+        isExpanded || isPinned ? "mr-3" : "mx-auto"
+      } relative flex items-center justify-center ${!isExpanded && !isPinned ? "w-full" : ""}`;
     }, [isExpanded, isPinned]);
 
     const iconClassName = useMemo(() => {
-      return isActive ? "text-primary-800" : "group-hover:scale-110 transition-transform duration-200";
-    }, [isActive]);
+      return `${isActive ? "text-primary-800" : "group-hover:scale-110 transition-transform duration-200"} ${
+        !isExpanded && !isPinned ? "scale-110" : ""
+      }`;
+    }, [isActive, isExpanded, isPinned]);
 
     const textClassName = useMemo(() => {
       return `truncate transition-all duration-300 ${
-        !isExpanded && !isPinned ? "md:opacity-0 md:w-0 md:translate-x-5" : "md:opacity-100 md:w-auto md:translate-x-0"
+        !isExpanded && !isPinned
+          ? "md:opacity-0 md:w-0 md:absolute md:pointer-events-none"
+          : "md:opacity-100 md:w-auto md:relative"
       }`;
     }, [isExpanded, isPinned]);
 
@@ -187,8 +193,9 @@ const DashboardSidebar = ({ isOpen, toggleSidebar, className, onStateChange }: D
   // Transition style for smooth animations
   const transitionStyle = useMemo(
     () => ({
-      transition: "width 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+      transition: "width 0.3s cubic-bezier(0.4, 0, 0.2, 1), transform 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
       willChange: "width, transform", // Hint to browser for optimizing animations
+      overflow: "hidden", // Ensures content doesn't overflow during transition
     }),
     []
   );
@@ -210,10 +217,10 @@ const DashboardSidebar = ({ isOpen, toggleSidebar, className, onStateChange }: D
 
   // Memoized header text class name
   const headerTextClassName = useMemo(() => {
-    return `text-xl font-bold text-soft-ivory transition-all duration-300 ${
+    return `text-xl font-bold text-soft-ivory transition-all duration-300 whitespace-nowrap overflow-hidden ${
       !isExpanded && !isPinned
-        ? "md:opacity-0 md:scale-90 md:translate-x-5"
-        : "md:opacity-100 md:scale-100 md:translate-x-0"
+        ? "md:opacity-0 md:max-w-0 md:translate-x-5"
+        : "md:opacity-100 md:max-w-full md:translate-x-0"
     }`;
   }, [isExpanded, isPinned]);
 
@@ -251,9 +258,15 @@ const DashboardSidebar = ({ isOpen, toggleSidebar, className, onStateChange }: D
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}>
       <div className="flex flex-col h-full p-3">
-        <div className="flex items-center justify-between p-2 mb-6 rounded-lg bg-primary-800 bg-opacity-50">
+        <div
+          className={`flex items-center justify-between p-2 mb-6 rounded-lg bg-primary-800 bg-opacity-50 transition-all duration-300 ${
+            !isExpanded && !isPinned ? "md:justify-center" : ""
+          }`}>
           <h2 className={headerTextClassName}>Menu</h2>
-          <div className="flex items-center space-x-2">
+          <div
+            className={`flex items-center space-x-2 transition-all duration-300 ${
+              !isExpanded && !isPinned ? "md:ml-0" : ""
+            }`}>
             {!isMobile && (
               <button
                 onClick={togglePin}
@@ -270,7 +283,10 @@ const DashboardSidebar = ({ isOpen, toggleSidebar, className, onStateChange }: D
             </button>
           </div>
         </div>
-        <nav className="flex-1 bg-primary-800 bg-opacity-70 rounded-lg p-2 overflow-y-auto custom-scrollbar">
+        <nav
+          className={`flex-1 bg-primary-800 bg-opacity-70 rounded-lg p-2 overflow-y-auto custom-scrollbar transition-all duration-300 ${
+            !isExpanded && !isPinned ? "md:px-1" : ""
+          }`}>
           {navItems}
         </nav>
       </div>
