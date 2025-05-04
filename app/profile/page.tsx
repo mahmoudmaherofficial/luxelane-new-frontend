@@ -1,5 +1,4 @@
 "use client";
-import BASE_URL from "@/api/BASE_URL";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
 import Cookies from "js-cookie";
@@ -8,6 +7,7 @@ import { deleteAccount } from "@/api/account";
 import Loader from "@/components/ui/Loader";
 import { useAccountContext } from "@/context/AccountContext";
 import siteName from "@/constants/mainInfo";
+import Image from "next/image";
 
 
 const ProfilePage = () => {
@@ -64,11 +64,12 @@ const ProfilePage = () => {
           <div className="max-w-md mx-auto bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl">
             <div className="md:flex">
               <div className="md:flex-shrink-0">
-                <img
+                <Image
+                  src={user?.image||'/images/default-profile.png'}
+                  alt={user?.username || `${siteName} User`}
+                  width={200}
+                  height={200}
                   className="h-80 md:h-48 w-full object-cover md:w-48 select-none"
-                  src={`${user?.image ? BASE_URL.replace("/api", "") + user?.image : "/images/default-profile.jpg"}`}
-                  alt={user?.username || "Profile Image"}
-                  loading="lazy"
                 />
               </div>
               <div className="p-8">
