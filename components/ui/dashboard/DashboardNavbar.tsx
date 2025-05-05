@@ -20,7 +20,7 @@ export default function DashboardNavbar({ toggleSidebar, className, isSidebarOpe
       if (resizeTimer) return;
 
       resizeTimer = setTimeout(() => {
-        setIsMobile(window.innerWidth < 1024); // Show on tablet too (< 1024px)
+        setIsMobile(window.innerWidth <= 992); // Show on tablet too (< 1024px)
         resizeTimer = null;
       }, 100);
     };
@@ -103,9 +103,9 @@ export default function DashboardNavbar({ toggleSidebar, className, isSidebarOpe
               style={{
                 animation: "fadeIn 0.2s ease-out forwards",
               }}>
-              <div className="px-4 py-2 border-b border-primary-800">
-                <p className="text-sm font-medium">{user?.username || "User"}</p>
-                <p className="text-xs text-gray-400">{user?.email || "user@example.com"}</p>
+              <div className="px-4 py-2 border-b border-primary-800 overflow-hidden">
+                <p className="text-sm font-medium truncate">{user?.username || "User"}</p>
+                <p className="text-xs text-gray-400 truncate">{user?.email || "user@example.com"}</p>
               </div>
               <Link
                 href="/profile"

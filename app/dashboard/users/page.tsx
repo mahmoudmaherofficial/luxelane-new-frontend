@@ -5,6 +5,8 @@ import { User } from "@/types";
 import { PencilIcon, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import DataTable from "@/components/ui/dashboard/DataTable";
+import Button from "@/components/ui/Button";
+import { FaPen, FaPencil, FaTrash } from "react-icons/fa6";
 
 const UsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -36,6 +38,7 @@ const UsersPage = () => {
   };
 
   const columns = [
+    { key: "no", header: "#" },
     { key: "username", header: "Name" },
     { key: "email", header: "Email" },
     { key: "role", header: "Role" },
@@ -43,21 +46,17 @@ const UsersPage = () => {
 
   const actions = (user: User) => (
     <>
-      <button
-        onClick={() => handleEdit(user._id)}
-        className="bg-primary-500 text-white px-2 py-1 rounded hover:bg-primary-600">
-        <PencilIcon className="w-4" />
-      </button>
-      <button
-        onClick={() => handleDelete(user._id)}
-        className="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700">
-        <Trash className="w-4" />
-      </button>
+      <Button variant="outline-primary" size="sm" onClick={() => handleEdit(user._id)} className="w-8 h-8">
+        <FaPen className="w-4 h-4" />
+      </Button>
+      <Button variant="danger" size="sm" onClick={() => handleDelete(user._id)} className="w-8 h-8">
+        <FaTrash className="w-4 h-4" />
+      </Button>
     </>
   );
 
   return (
-    <div>
+    <section className="p-4 md:p-6 lg:p-8">
       <h1 className="text-3xl md:text-4xl font-bold text-primary-900 mb-4">Users</h1>
       <DataTable
         data={users}
@@ -66,7 +65,7 @@ const UsersPage = () => {
         actions={actions}
         noDataMessage="No users found."
       />
-    </div>
+    </section>
   );
 };
 

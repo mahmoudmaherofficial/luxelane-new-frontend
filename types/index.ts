@@ -1,4 +1,4 @@
-import React, { MouseEventHandler } from "react";
+import React, { MouseEventHandler, ReactNode } from "react";
 
 export interface AuthFormField {
   type: "text" | "email" | "password" | "number" | "file";
@@ -7,6 +7,8 @@ export interface AuthFormField {
   accept?: string;
   minLength?: number;
   label?: string;
+  className?: string;
+  pattern?: string;
 }
 
 export interface AuthFormProps {
@@ -43,6 +45,7 @@ export interface InputProps {
   minLength?: number;
   label?: string;
   className?: string;
+  pattern?: string;
 }
 export interface RefreshTokenResponse {
   accessToken?: string | undefined;
@@ -66,7 +69,7 @@ export interface EditProfileFormData {
 }
 
 export interface DashboardNavbarProps {
-  toggleSidebar: (value: boolean | ((prev: boolean) => boolean)) => void;
+  toggleSidebar: any;
   className?: string;
   isSidebarOpen?: boolean;
 }
@@ -88,4 +91,18 @@ export interface DashboardNavItem {
 export interface dropdownMenuItem {
   href: string;
   label: string;
+}
+
+export interface Column<T> {
+  key: string;
+  header: string;
+  render?: (item: T) => ReactNode;
+}
+
+export interface DataTableProps<T> {
+  data: T[];
+  columns: Column<T>[];
+  keyExtractor: (item: T) => string;
+  actions?: (item: T) => ReactNode;
+  noDataMessage?: string;
 }

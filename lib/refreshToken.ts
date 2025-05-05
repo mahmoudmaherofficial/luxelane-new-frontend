@@ -1,7 +1,7 @@
 // lib/refreshToken.ts
 import BASE_URL from "@/api/BASE_URL";
 import { RefreshTokenResponse } from "@/types";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 // Reusable function to refresh access token
 export default async function refreshAccessToken(): Promise<string | undefined> {
@@ -22,7 +22,10 @@ export default async function refreshAccessToken(): Promise<string | undefined> 
     // }
 
     return accessToken;
-  } catch (error) {
+  } catch (error:AxiosError | any) {
+    if (error.response.status === 403) {
+      throw new Error("Unauthorized");
+    }
     throw new Error("Failed to refresh token");
   }
 }

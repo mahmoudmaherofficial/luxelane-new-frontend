@@ -211,6 +211,7 @@ import refreshAccessToken from "./lib/refreshToken";
 import axios from "axios";
 import BASE_URL from "./api/BASE_URL";
 import dashboardNavItems from "./constants/DashboardNavLinks";
+import path from "path";
 
 export async function middleware(request: NextRequest): Promise<NextResponse> {
   const { pathname } = request.nextUrl;
@@ -271,8 +272,14 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
       });
 
       const matchedNavItem = dashboardNavItems.find((item) => {
-        const navPathname = new URL(item.href, request.nextUrl).pathname;
-        return navPathname === pathname && item.allowedRoles.includes(res.data.role);
+        const splitPathname = pathname.split("/").filter(Boolean);
+        const splitHref = item.href.split("/").filter(Boolean);
+        console.log("splitPathname", splitPathname);
+        console.log("splitHref", splitHref);
+        return (
+          splitHref.includes(splitPathname.length > 1 ? splitPathname[1] : splitPathname[0]) &&
+          item.allowedRoles.includes(res.data.role)
+        );
       });
 
       if (!matchedNavItem) {

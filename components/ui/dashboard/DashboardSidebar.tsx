@@ -1,4 +1,3 @@
-// TODO: Fix the sidebar not being tablet responsive
 "use client";
 import dashboardNavItems from "@/constants/DashboardNavLinks";
 
@@ -90,7 +89,7 @@ const DashboardSidebar = ({ isOpen, toggleSidebar, className, onStateChange }: D
   // Use ResizeObserver for more efficient window resize handling
   useEffect(() => {
     const handleResize = () => {
-      const mobile = window.innerWidth < 768;
+      const mobile = window.innerWidth <= 768;
       if (mobile !== isMobile) {
         setIsMobile(mobile);
         if (mobile) {

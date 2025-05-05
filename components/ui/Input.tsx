@@ -11,6 +11,7 @@ const Input = ({
   minLength = 0,
   label,
   className,
+  pattern
 }: InputProps) => {
   return (
     <div className="relative w-full">
@@ -25,6 +26,7 @@ const Input = ({
         accept={accept}
         className={`peer w-full border border-gray-300 rounded-md px-3 py-2 text-primary-900 text-sm placeholder-transparent focus:outline-none focus:border-primary-500 focus:ring-1 focus:ring-primary-500 peer-invalid:border-red-700 peer-invalid:ring-red-700 peer-valid:border-green-500 ${className}`}
         minLength={minLength}
+        pattern={pattern}
       />
       <label
         htmlFor={name}

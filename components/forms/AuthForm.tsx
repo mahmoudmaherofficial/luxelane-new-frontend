@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import Input from "@/components/ui/Input";
 import Button from "@/components/ui/Button";
 import Link from "next/link";
@@ -24,20 +24,78 @@ const authFormDetails = {
 
 const AuthForm = ({ fields, type }: AuthFormProps) => {
   const { title, linkText, linkUrl } = authFormDetails[type];
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [formValues, setFormValues] = useState<{ [key: string]: string }>({});
+
+  // Validation function for a single field
+  const validateField = (field: AuthFormProps["fields"][0], value: string): string => {
+    if (field.required && !value) {
+      return `${field.label || field.name} is required`;
+    }
+    if (field.minLength && value.length < field.minLength) {
+      return `${field.label || field.name} must be at least ${field.minLength} characters`;
+    }
+    if (field.pattern && !new RegExp(field.pattern).test(value)) {
+      if (field.name === "username") {
+        return "Username must start with letter or _ , contain only letters, digits, or _ , and have no spaces";
+      }
+      if (field.name === "email") {
+        return "Email must be a valid address (e.g., user@example.com)";
+      }
+      if (field.name === "password"|| field.name === "confirmPassword") {
+        return "Password mustn't contain spaces";
+      }
+      return `Invalid ${field.label || field.name} format`;
+    }
+    return "";
+  };
+
+  // Handle input change and validate in real-time
+  const handleInputChange = (name: string, value: string) => {
+    setFormValues((prev) => ({ ...prev, [name]: value }));
+
+    const field = fields.find((f) => f.name === name);
+    if (field) {
+      const error = validateField(field, value);
+      setErrors((prev) => ({ ...prev, [name]: error }));
+    }
+  };
+
+  // Validate all fields on form submission
+  const validateForm = (): boolean => {
+    const newErrors: { [key: string]: string } = {};
+    let isValid = true;
+
+    fields.forEach((field) => {
+      const value = formValues[field.name] || "";
+      const error = validateField(field, value);
+      newErrors[field.name] = error;
+      if (error) isValid = false;
+    });
+
+    setErrors(newErrors);
+    return isValid;
+  };
 
   const submitForm = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+
+    // Validate form before submission
+    if (!validateForm()) {
+      toast.error("Please fix the form errors");
+      return;
+    }
 
     const formData = new FormData(event.currentTarget);
 
     try {
       if (type === "register") {
         // Convert username and email to lowercase for register
-        const username = formData.get('username')?.toString().toLowerCase();
-        const email = formData.get('email')?.toString().toLowerCase();
-        if (username) formData.set('username', username);
-        if (email) formData.set('email', email);
-        
+        const username = formData.get("username")?.toString().toLowerCase();
+        const email = formData.get("email")?.toString().toLowerCase();
+        if (username) formData.set("username", username);
+        if (email) formData.set("email", email);
+
         await register(formData);
         toast.success("Account created successfully");
       } else if (type === "login") {
@@ -47,7 +105,7 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
       }
       window.location.replace("/");
     } catch (error: any) {
-      toast.error(error.response?.data?.error);
+      toast.error(error.response?.data?.error || "An error occurred");
     }
   };
 
@@ -57,16 +115,20 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
         <form className="flex flex-col gap-4 h-full" onSubmit={submitForm}>
           <h1 className="text-3xl font-bold mb-2 text-primary-500">{title}</h1>
           {fields.map((field, index) => (
-            <Input
-              key={index}
-              type={field.type}
-              name={field.name}
-              required={field.required}
-              accept={field.accept}
-              minLength={field.minLength}
-              label={field.label ? field.label : field.name}
-              className={field.name === "username" || field.name === "email" ? "lowercase" : ""}
-            />
+            <div key={index} className="flex flex-col">
+              <Input
+                type={field.type}
+                name={field.name}
+                required={field.required}
+                accept={field.accept}
+                minLength={field.minLength}
+                label={field.label ? field.label : field.name}
+                className={field.name === "username" || field.name === "email" ? "lowercase" : ""}
+                pattern={field.name === "username" ? "^[a-z_][a-z0-9_]*$" : field.pattern}
+                onChange={(e) => handleInputChange(field.name, e.target.value)}
+              />
+              {errors[field.name] && <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>}
+            </div>
           ))}
 
           <Button type="submit" className="mt-auto">
