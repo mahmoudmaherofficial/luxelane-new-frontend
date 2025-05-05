@@ -68,7 +68,7 @@
 
 // import { NextRequest, NextResponse } from "next/server";
 // import refreshAccessToken from "./lib/refreshToken";
-// import BASE_URL from "./api/BASE_URL";
+//
 // import dashboardNavItems from "./constants/DashboardNavLinks";
 
 // export async function middleware(request: NextRequest): Promise<NextResponse> {
@@ -156,7 +156,7 @@
 
 //     try {
 //       console.log("Middleware: Fetching account details for /dashboard");
-//       const res = await fetch(`${BASE_URL}/account`, {
+//       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/account`, {
 //         headers: { Authorization: `Bearer ${accessToken}` },
 //         credentials: "include", // Include if API requires cookies
 //       });
@@ -209,7 +209,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import refreshAccessToken from "./lib/refreshToken";
 import axios from "axios";
-import BASE_URL from "./api/BASE_URL";
+
 import dashboardNavItems from "./constants/DashboardNavLinks";
 import path from "path";
 
@@ -267,7 +267,7 @@ export async function middleware(request: NextRequest): Promise<NextResponse> {
     }
 
     try {
-      const res = await axios.get(`${BASE_URL}/account`, {
+      const res = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/account`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
 

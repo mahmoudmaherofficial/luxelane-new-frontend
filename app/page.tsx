@@ -10,7 +10,6 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "@/app/styles/slick-custom.css";
-import siteName from "@/constants/mainInfo";
 
 const HomePage = () => {
   const { user, loading } = useAccountContext();
@@ -76,7 +75,7 @@ const HomePage = () => {
         className="relative h-[calc(100vh-74px)] flex items-center select-none justify-center text-white">
         <Image
           src="/images/hero.webp"
-          alt={`${siteName} Fashion`}
+          alt={`${process.env.NEXT_PUBLIC_SITE_NAME} Fashion`}
           fill
           priority
           className="brightness-40 h-screen w-full object-cover"
@@ -87,7 +86,7 @@ const HomePage = () => {
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.8, delay: 0.2 }}
             className="text-5xl md:text-7xl font-bold mb-4">
-            {siteName}
+            {process.env.NEXT_PUBLIC_SITE_NAME}
           </motion.h1>
           <motion.p
             initial={{ y: 30, opacity: 0, width: 0 }}
@@ -200,7 +199,9 @@ const HomePage = () => {
           whileInView={{ y: 0, opacity: 1 }}
           transition={{ duration: 0.8 }}
           className="container mx-auto px-4 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">Stay in Style with {siteName}</h2>
+          <h2 className="text-2xl md:text-3xl font-bold mb-4 text-white">
+            Stay in Style with {process.env.NEXT_PUBLIC_SITE_NAME}
+          </h2>
           <p className="text-primary-200 mb-6 max-w-lg mx-auto">
             {user ? "Explore your personalized fashion journey." : "Join our community for exclusive offers."}
           </p>

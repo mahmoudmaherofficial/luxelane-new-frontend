@@ -6,9 +6,8 @@ import Swal from "sweetalert2";
 import { deleteAccount } from "@/api/account";
 import Loader from "@/components/ui/Loader";
 import { useAccountContext } from "@/context/AccountContext";
-import siteName from "@/constants/mainInfo";
-import Image from "next/image";
 
+import Image from "next/image";
 
 const ProfilePage = () => {
   const { user, loading } = useAccountContext();
@@ -65,8 +64,8 @@ const ProfilePage = () => {
             <div className="md:flex">
               <div className="md:flex-shrink-0">
                 <Image
-                  src={user?.image||'/images/default-profile.png'}
-                  alt={user?.username || `${siteName} User`}
+                  src={user?.image || "/images/default-profile.png"}
+                  alt={user?.username || `${process.env.NEXT_PUBLIC_SITE_NAME} User`}
                   width={200}
                   height={200}
                   className="h-80 md:h-48 w-full object-cover md:w-48 select-none"
@@ -80,7 +79,7 @@ const ProfilePage = () => {
                   {user?.email || "No Email Available"}
                 </p>
                 <p className="mt-4 text-gray-500">
-                  {siteName} {roleMap[user?.role as keyof typeof roleMap] || "Unknown Role"}
+                  {process.env.NEXT_PUBLIC_SITE_NAME} {roleMap[user?.role as keyof typeof roleMap] || "Unknown Role"}
                 </p>
               </div>
             </div>

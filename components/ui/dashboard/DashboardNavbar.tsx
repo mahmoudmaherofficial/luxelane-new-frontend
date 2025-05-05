@@ -4,7 +4,6 @@ import { Menu, User, Bell, Search, Settings } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import { useAccountContext } from "@/context/AccountContext";
-import siteName from "@/constants/mainInfo";
 
 export default function DashboardNavbar({ toggleSidebar, className, isSidebarOpen }: DashboardNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -62,7 +61,7 @@ export default function DashboardNavbar({ toggleSidebar, className, isSidebarOpe
           </button>
         )}
         <h1 className="text-xl md:text-2xl font-semibold text-soft-ivory tracking-wide">
-          <span className="hidden md:inline">{siteName}</span> Dashboard
+          <span className="hidden md:inline">{process.env.NEXT_PUBLIC_SITE_NAME}</span> Dashboard
         </h1>
       </div>
 

@@ -5,7 +5,6 @@ import "./styles/tailwind.css";
 import { ToastContainer } from "react-toastify";
 import { AccountProvider } from "@/context/AccountContext";
 import MainNavbarWrapper from "@/components/wrappers/MainNavbarWrapper";
-import siteName from "@/constants/mainInfo";
 
 const merriweather = Merriweather_Sans({
   subsets: ["latin"],
@@ -13,8 +12,8 @@ const merriweather = Merriweather_Sans({
 
 export const metadata = (): Metadata => ({
   title: {
-    template: `%s | ${siteName}`,
-    default: siteName,
+    template: `%s | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
+    default: process.env.NEXT_PUBLIC_SITE_NAME,
   },
   description:
     "Your one-stop destination for luxury fashion and accessories. Shop the latest trends and exclusive collections today!",

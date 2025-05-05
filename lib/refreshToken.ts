@@ -1,12 +1,11 @@
 // lib/refreshToken.ts
-import BASE_URL from "@/api/BASE_URL";
 import { RefreshTokenResponse } from "@/types";
 import axios, { AxiosError } from "axios";
 
 // Reusable function to refresh access token
 export default async function refreshAccessToken(): Promise<string | undefined> {
   try {
-    const res = await axios.post(`${BASE_URL}/auth/refresh-token`, {}, {
+    const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh-token`, {}, {
       withCredentials: true,
       headers: {
         'Content-Type': 'application/json',
@@ -22,7 +21,7 @@ export default async function refreshAccessToken(): Promise<string | undefined> 
     // }
 
     return accessToken;
-  } catch (error:AxiosError | any) {
+  } catch (error: AxiosError | any) {
     if (error.response.status === 403) {
       throw new Error("Unauthorized");
     }

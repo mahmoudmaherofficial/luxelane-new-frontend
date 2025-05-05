@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import Button from "./Button";
 import { useAccountContext } from "@/context/AccountContext";
 import { dropdownMenuItem } from "@/types";
-import siteName from "@/constants/mainInfo";
 
 const MainNavbar = () => {
   const router = useRouter();
@@ -15,7 +14,6 @@ const MainNavbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  // Refs for dropdown and mobile menu
   const dropdownRef = useRef<HTMLUListElement>(null);
   const dropdownButtonRef = useRef<HTMLButtonElement>(null);
   const mobileMenuRef = useRef<HTMLElement>(null);
@@ -25,7 +23,7 @@ const MainNavbar = () => {
     e.preventDefault();
     if (searchQuery.trim()) {
       router.push(`/shop?search=${encodeURIComponent(searchQuery)}`);
-      setSearchQuery(""); // Clear search input after submission
+      setSearchQuery("");
     }
   };
 
@@ -37,10 +35,8 @@ const MainNavbar = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // Handle click outside to close menus
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Close dropdown if click is outside dropdown and dropdown button
       if (
         isDropdownOpen &&
         dropdownRef.current &&
@@ -51,7 +47,6 @@ const MainNavbar = () => {
         setIsDropdownOpen(false);
       }
 
-      // Close mobile menu if click is outside mobile menu and mobile button
       if (
         isMobileMenuOpen &&
         mobileMenuRef.current &&
@@ -69,14 +64,17 @@ const MainNavbar = () => {
     };
   }, [isDropdownOpen, isMobileMenuOpen]);
 
-
-  // Dropdown menu items
   const dropdownMenuItems: dropdownMenuItem[] = user
-    ? ([
-        [1995, 1996].includes(user?.role) && { href: "/dashboard", label: "Dashboard" },
-        { href: "/profile", label: "Profile" },
-        { href: "/logout", label: "Logout" },
-      ].filter(Boolean) as dropdownMenuItem[])
+    ? [1995, 1996].includes(user?.role)
+      ? [
+          { href: "/dashboard", label: "Dashboard" },
+          { href: "/profile", label: "Profile" },
+          { href: "/logout", label: "Logout" },
+        ]
+      : [
+          { href: "/profile", label: "Profile" },
+          { href: "/logout", label: "Logout" },
+        ]
     : [
         { href: "/login", label: "Login" },
         { href: "/register", label: "Register" },
@@ -91,7 +89,7 @@ const MainNavbar = () => {
       <div className="container mx-auto px-4 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold text-primary-500">
-          {siteName}
+          {process.env.NEXT_PUBLIC_SITE_NAME}
         </Link>
 
         {/* Search Bar */}
@@ -110,7 +108,7 @@ const MainNavbar = () => {
         </form>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center">
+        <nav className="hidden lg:flex items-center">
           <div className="relative">
             <button
               ref={dropdownButtonRef}
@@ -118,7 +116,7 @@ const MainNavbar = () => {
               className="text-primary-500 hover:text-primary-600 transition-colors flex items-center"
               aria-expanded={isDropdownOpen}
               aria-label="Account menu">
-              {user ? "Account" : "Sign In"}
+              {user ? user?.username : "Sign In"}
               <svg
                 className="ml-2 w-4 h-4"
                 fill="none"
@@ -156,7 +154,7 @@ const MainNavbar = () => {
         {/* Hamburger Menu Button (Mobile) */}
         <button
           ref={mobileButtonRef}
-          className="md:hidden flex items-center p-2 text-primary-500"
+          className="lg:hidden flex items-center p-2 text-primary-500"
           onClick={toggleMobileMenu}
           aria-label="Toggle mobile menu"
           aria-expanded={isMobileMenuOpen}>
@@ -185,7 +183,7 @@ const MainNavbar = () => {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-white shadow-md">
+            className="lg:hidden bg-white shadow-md">
             <ul className="container mx-auto px-4 py-4 flex flex-col gap-4">
               {dropdownMenuItems.map((item) => (
                 <li key={item.href}>

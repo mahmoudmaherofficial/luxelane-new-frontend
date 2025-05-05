@@ -4,11 +4,11 @@ import Button from "@/components/ui/Button";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import axios from "axios";
-import BASE_URL from "@/api/BASE_URL";
+
 import { useRouter } from "next/navigation";
 
 const logoutFn = async () => {
-  await axios.post(`${BASE_URL}/auth/logout`, {}, { withCredentials: true });
+  await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {}, { withCredentials: true });
   return { success: true };
 };
 
