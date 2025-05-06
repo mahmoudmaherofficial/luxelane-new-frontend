@@ -58,6 +58,14 @@ export interface User {
   image: string;
   role: number;
 }
+
+export interface Category {
+  _id: string;
+  name: string;
+  description?: string;
+  updatedAt?: string | undefined;
+}
+
 export interface AccountContextType {
   user: User | undefined;
   loading: boolean;
@@ -93,10 +101,23 @@ export interface dropdownMenuItem {
   label: string;
 }
 
+// export interface Column<T> {
+//   key: string;
+//   header: string;
+//   render?: (item: T) => ReactNode;
+// }
+
+// export interface DataTableProps<T> {
+//   data: T[];
+//   columns: Column<T>[];
+//   keyExtractor: (item: T) => string;
+//   actions?: (item: T) => ReactNode;
+//   noDataMessage?: string;
+// }
 export interface Column<T> {
-  key: string;
+  key: keyof T;
   header: string;
-  render?: (item: T) => ReactNode;
+  render?: (item: T, index: number) => ReactNode;
 }
 
 export interface DataTableProps<T> {
@@ -105,4 +126,8 @@ export interface DataTableProps<T> {
   keyExtractor: (item: T) => string;
   actions?: (item: T) => ReactNode;
   noDataMessage?: string;
+  className?: string;
+  rowClassName?: (index: number) => string;
+  roleMap?: Record<number, string>;
+  currentUserId?: string | null;
 }
