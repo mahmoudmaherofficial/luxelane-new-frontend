@@ -40,7 +40,7 @@ function DataTable<T>({
               <tr key={keyExtractor(item)} className={`${rowClassName(index)} hover:bg-primary-100`}>
                 <td className="px-3 py-2">{index + 1}</td>
                 {columns.map((column) => (
-                  <td key={column.key as any} className="px-3 py-2">
+                  <td key={column.key as any} className={`px-3 py-2 ${column.key === "size"|| column.key === "colors" && "max-w-20"}`}>
                     {column.render
                       ? column.render(item, index)
                       : column.key === "role" && roleMap

@@ -46,6 +46,7 @@ export interface InputProps {
   label?: string;
   className?: string;
   pattern?: string;
+  min?: number;
 }
 export interface RefreshTokenResponse {
   accessToken?: string | undefined;
@@ -63,6 +64,19 @@ export interface Category {
   _id: string;
   name: string;
   description?: string;
+  updatedAt?: string | undefined;
+}
+
+export interface Product {
+  _id?: string;
+  name: string;
+  description?: string;
+  price: number | string;
+  images?: string[];
+  stock: number | string;
+  size: string[];
+  colors: string[];
+  category: string;
   updatedAt?: string | undefined;
 }
 
