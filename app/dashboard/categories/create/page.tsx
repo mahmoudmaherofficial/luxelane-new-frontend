@@ -30,9 +30,8 @@ const CreateCategoryPage = () => {
       await createCategoryApi(formData as Category);
       toast.success("Category created successfully!");
       router.push("/dashboard/categories"); // غير المسار حسب نظامك
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to create category");
+    } catch (err: any) {
+      toast.error(err.response.data.error || "Failed to create category");
     } finally {
       setIsLoading(false);
     }
@@ -44,8 +43,7 @@ const CreateCategoryPage = () => {
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="p-6 max-w-xl mx-auto bg-white rounded-xl shadow-md text-primary-900"
-      >
+        className="p-6 max-w-xl mx-auto bg-white rounded-xl shadow-md text-primary-900">
         <h2 className="text-2xl font-bold mb-4">Create New Category</h2>
         {isLoading ? (
           <Loader />
@@ -73,4 +71,3 @@ const CreateCategoryPage = () => {
 };
 
 export default CreateCategoryPage;
-

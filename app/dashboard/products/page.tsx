@@ -1,7 +1,8 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { deleteProduct, getAllProducts } from "@/api/products";
+import { deleteProduct, getPaginatedProducts } from "@/api/products";
 import DataTable from "@/components/ui/dashboard/DataTable";
 import Button from "@/components/ui/Button";
 import { FaEdit, FaTrash } from "react-icons/fa";
@@ -16,16 +17,23 @@ const ProductsPage = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
       try {
-        const res = await getAllProducts();
+        const res = await getPaginatedProducts(currentPage, itemsPerPage);
         if (!res.data) {
           throw new Error("No data returned from API");
         }
         setProducts(res.data.data || []);
+        setTotalItems(res.data.totalItems);
+        setTotalPages(res.data.totalPages);
+        console.log(res.data);
       } catch (err) {
         console.error(err);
         Swal.fire("Error!", "Could not fetch products.", "error");
@@ -35,7 +43,7 @@ const ProductsPage = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [currentPage, itemsPerPage]);
 
   const handleDeleteProduct = async (id: string) => {
     if (!id || !products.find((p) => p._id === id)) {
@@ -56,6 +64,8 @@ const ProductsPage = () => {
       try {
         await deleteProduct(id);
         setProducts(products.filter((p) => p._id !== id));
+        setTotalItems((prev) => (prev > 0 ? prev - 1 : 0));
+        setTotalPages(Math.ceil((totalItems - 1) / itemsPerPage));
         Swal.fire("Deleted!", `${productName} has been deleted.`, "success");
       } catch (err) {
         console.error(err);
@@ -104,7 +114,7 @@ const ProductsPage = () => {
     {
       key: "image",
       header: "Image",
-      render: (row:any) => (
+      render: (row: any) => (
         <div className="flex space-x-2">
           {row.images?.length > 0 ? (
             <img src={row.images[0]} alt={row.name} width={32} height={32} loading="lazy" />
@@ -126,7 +136,7 @@ const ProductsPage = () => {
     },
   ];
 
-  const actions = (product:Product) => (
+  const actions = (product: Product) => (
     <>
       <Link href={`/dashboard/products/${product._id}/edit`}>
         <Button variant="outline-primary" size="sm" className="w-8 h-8">
@@ -159,6 +169,11 @@ const ProductsPage = () => {
           keyExtractor={(product) => product._id || ""}
           actions={actions}
           noDataMessage="No products found."
+          totalItems={totalItems}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={setItemsPerPage}
         />
       </section>
     </>

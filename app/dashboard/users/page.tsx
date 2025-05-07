@@ -1,6 +1,6 @@
 "use client";
 
-import { getAllUsers } from "@/api/users"; // Assume getCurrentUser exists
+import { getPaginatedUsers } from "@/api/users";
 import { getAccount } from "@/api/account";
 import api from "@/lib/axiosInterceptor";
 import { User } from "@/types";
@@ -17,24 +17,27 @@ const UsersPage = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setIsLoading(true);
-        // Fetch current user
         const currentUserRes = await getAccount();
         setCurrentUserId(currentUserRes.data._id);
 
-        // Fetch all users
-        const res = await getAllUsers();
+        const res = await getPaginatedUsers(currentPage, itemsPerPage);
         const fetchedUsers = res.data.data;
 
-        // Sort users: current user first
         const sortedUsers = fetchedUsers.sort((a: User, b: User) =>
           a._id === currentUserRes.data._id ? -1 : b._id === currentUserRes.data._id ? 1 : 0
         );
         setUsers(sortedUsers);
+        setTotalItems(res.data.totalItems);
+        setTotalPages(res.data.totalPages);
       } catch (err) {
         console.error("Error fetching data:", err);
       } finally {
@@ -42,7 +45,7 @@ const UsersPage = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [currentPage, itemsPerPage]);
 
   const handleDelete = async (userId: string) => {
     const result = await Swal.fire({
@@ -60,6 +63,8 @@ const UsersPage = () => {
         setIsLoading(true);
         await api.delete(`/users/${userId}`);
         setUsers((prev) => prev.filter((user) => user._id !== userId));
+        setTotalItems((prev) => (prev > 0 ? prev - 1 : 0));
+        setTotalPages(Math.ceil((totalItems - 1) / itemsPerPage)); // Recalculate totalPages after deletion
         Swal.fire("Deleted!", "The user has been deleted.", "success");
       } catch (err) {
         console.error("Delete failed", err);
@@ -120,7 +125,12 @@ const UsersPage = () => {
             1996: "Product Manager",
             2004: "User",
           }}
-          currentUserId={currentUserId} // Pass currentUserId to DataTable
+          currentUserId={currentUserId}
+          totalItems={totalItems}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={setItemsPerPage}
         />
       </section>
     </>

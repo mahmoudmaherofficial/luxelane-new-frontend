@@ -10,13 +10,17 @@ import Loader from "@/components/ui/Loader";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import api from "@/lib/axiosInterceptor";
-import { getAllOrders } from "@/api/orders";
+import { getPaginatedOrders } from "@/api/orders";
 import { formatDate } from "@/lib/formatDate";
 
 const OrdersPage = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [userRole, setUserRole] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchOrders = async () => {
@@ -26,8 +30,10 @@ const OrdersPage = () => {
         const role = localStorage.getItem("userRole") || "2004"; // Default to user role
         setUserRole(parseInt(role, 10));
 
-        const res = await getAllOrders();
-        setOrders(res.data);
+        const res = await getPaginatedOrders(currentPage, itemsPerPage);
+        setOrders(res.data.data);
+        setTotalItems(res.data.totalItems);
+        setTotalPages(res.data.totalPages);
       } catch (err) {
         console.error("Error fetching orders:", err);
         Swal.fire("Error", "Failed to fetch orders", "error");
@@ -36,10 +42,10 @@ const OrdersPage = () => {
       }
     };
     fetchOrders();
-  }, []);
+  }, [currentPage, itemsPerPage]);
 
   const handleUpdateStatus = async (orderId: string, currentStatus: string) => {
-    const validStatuses = ["pending", "processing", "shipped", "delivered", "cancelled"];
+    const validStatuses = ["pending", "processing", "confirmed", "shipped", "delivered", "cancelled"];
     const { value: newStatus } = await Swal.fire({
       title: "Update Order Status",
       input: "select",
@@ -97,6 +103,8 @@ const OrdersPage = () => {
           setIsLoading(true);
           await api.delete(`/orders/${orderId}`);
           setOrders((prev) => prev.filter((order) => order._id !== orderId));
+          setTotalItems((prev) => (prev > 0 ? prev - 1 : 0));
+          setTotalPages(Math.ceil((totalItems - 1) / itemsPerPage));
           Swal.fire("Deleted!", "The order has been deleted.", "success");
         } catch (err) {
           console.error("Delete failed", err);
@@ -139,13 +147,15 @@ const OrdersPage = () => {
           className={`px-2 py-1 rounded-full text-xs font-semibold ${
             order.status === "pending"
               ? "bg-yellow-100 text-yellow-800"
-              : order.status === "shipped"
-                ? "bg-blue-100 text-blue-800"
-                : order.status === "delivered"
-                  ? "bg-green-100 text-green-800"
-                  : order.status === "cancelled"
-                    ? "bg-red-100 text-red-800"
-                    : "bg-orange-100 text-orange-800"
+              : order.status === "confirmed"
+                ? "bg-violet-100 text-violet-800"
+                : order.status === "shipped"
+                  ? "bg-blue-100 text-blue-800"
+                  : order.status === "delivered"
+                    ? "bg-green-100 text-green-800"
+                    : order.status === "cancelled"
+                      ? "bg-red-100 text-red-800"
+                      : "bg-orange-100 text-orange-800"
           }`}>
           {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
         </span>
@@ -195,6 +205,11 @@ const OrdersPage = () => {
           keyExtractor={(order: Order) => order._id}
           actions={actions}
           noDataMessage="No orders found."
+          totalItems={totalItems}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={setItemsPerPage}
         />
       </section>
     </>

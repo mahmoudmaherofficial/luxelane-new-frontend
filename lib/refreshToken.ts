@@ -12,7 +12,6 @@ export default async function refreshAccessToken(): Promise<string | undefined> 
         'Accept': 'application/json',
       }
     });
-    console.log('res', res);
 
     const { accessToken }: RefreshTokenResponse = res.data;
 

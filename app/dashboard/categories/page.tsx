@@ -10,20 +10,25 @@ import Loader from "@/components/ui/Loader";
 import { motion } from "framer-motion";
 import Swal from "sweetalert2";
 import api from "@/lib/axiosInterceptor";
-import { getAllCategories } from "@/api/categories";
-import { render } from "solid-js/web";
+import { getPaginatedCategories } from "@/api/categories";
 import { formatDate } from "@/lib/formatDate";
 
 const CategoriesPage = () => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         setIsLoading(true);
-        const res = await getAllCategories();
+        const res = await getPaginatedCategories(currentPage, itemsPerPage);
         setCategories(res.data.data);
+        setTotalItems(res.data.totalItems);
+        setTotalPages(res.data.totalPages);
       } catch (err) {
         console.error("Error fetching categories:", err);
       } finally {
@@ -31,7 +36,7 @@ const CategoriesPage = () => {
       }
     };
     fetchCategories();
-  }, []);
+  }, [currentPage, itemsPerPage]);
 
   const handleDelete = async (categoryId: string) => {
     const result = await Swal.fire({
@@ -49,6 +54,8 @@ const CategoriesPage = () => {
         setIsLoading(true);
         await api.delete(`/categories/${categoryId}`);
         setCategories((prev) => prev.filter((category) => category._id !== categoryId));
+        setTotalItems((prev) => (prev > 0 ? prev - 1 : 0));
+        setTotalPages(Math.ceil((totalItems - 1) / itemsPerPage));
         Swal.fire("Deleted!", "The category has been deleted.", "success");
       } catch (err) {
         console.error("Delete failed", err);
@@ -102,6 +109,11 @@ const CategoriesPage = () => {
           keyExtractor={(category: Category) => category._id}
           actions={actions}
           noDataMessage="No categories found."
+          totalItems={totalItems}
+          totalPages={totalPages}
+          itemsPerPage={itemsPerPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={setItemsPerPage}
         />
       </section>
     </>

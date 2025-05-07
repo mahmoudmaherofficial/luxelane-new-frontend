@@ -97,7 +97,7 @@ export interface Order {
     price: number;
   }>;
   totalAmount: number;
-  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  status: "pending" | "processing" | "confirmed" | "shipped" | "delivered" | "cancelled";
   address?: string;
   phoneNumber: string;
   secondaryPhoneNumber?: string;
@@ -170,4 +170,9 @@ export interface DataTableProps<T> {
   rowClassName?: (index: number) => string;
   roleMap?: Record<number, string>;
   currentUserId?: string | null;
+  totalItems?: number;              // Total number of items (from API response)
+  totalPages?: number;              // Total number of pages (from API response)
+  itemsPerPage?: number;            // Number of items per page (default or selected)
+  onPageChange?: (page: number) => void;     // Callback for page changes
+  onItemsPerPageChange?: (itemsPerPage: number) => void; // Callback for items-per-page changes
 }
