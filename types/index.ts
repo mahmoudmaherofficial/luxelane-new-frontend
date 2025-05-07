@@ -80,6 +80,32 @@ export interface Product {
   updatedAt?: string | undefined;
 }
 
+export interface Order {
+  _id: string;
+  user: {
+    _id: string;
+    username: string;
+    email: string;
+  };
+  products: Array<{
+    product: {
+      _id: string;
+      name: string;
+      price: number;
+    };
+    quantity: number;
+    price: number;
+  }>;
+  totalAmount: number;
+  status: "pending" | "processing" | "shipped" | "delivered" | "cancelled";
+  address?: string;
+  phoneNumber: string;
+  secondaryPhoneNumber?: string;
+  orderDate: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface AccountContextType {
   user: User | undefined;
   loading: boolean;
