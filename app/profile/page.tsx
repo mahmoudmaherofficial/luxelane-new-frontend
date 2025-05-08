@@ -48,6 +48,7 @@ const ProfilePage = () => {
       }
     }
   }; // handleDeleteAccount
+  
   const roleMap = {
     1995: "Admin",
     1996: "Seller",

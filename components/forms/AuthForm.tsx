@@ -8,6 +8,7 @@ import "@/app/styles/forms/auth-form.css";
 import { AuthFormProps } from "@/types";
 import { toast } from "react-toastify";
 import { login, register } from "@/api/authentication";
+import Loader from "@/components/ui/Loader";
 
 const authFormDetails = {
   login: {
@@ -24,6 +25,7 @@ const authFormDetails = {
 
 const AuthForm = ({ fields, type }: AuthFormProps) => {
   const { title, linkText, linkUrl } = authFormDetails[type];
+  const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [formValues, setFormValues] = useState<{ [key: string]: string }>({});
 
@@ -42,7 +44,7 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
       if (field.name === "email") {
         return "Email must be a valid address (e.g., user@example.com)";
       }
-      if (field.name === "password"|| field.name === "confirmPassword") {
+      if (field.name === "password" || field.name === "confirmPassword") {
         return "Password mustn't contain spaces";
       }
       return `Invalid ${field.label || field.name} format`;
@@ -89,6 +91,7 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
     const formData = new FormData(event.currentTarget);
 
     try {
+      setLoading(true);
       if (type === "register") {
         // Convert username and email to lowercase for register
         const username = formData.get("username")?.toString().toLowerCase();
@@ -106,48 +109,53 @@ const AuthForm = ({ fields, type }: AuthFormProps) => {
       window.location.replace("/");
     } catch (error: any) {
       toast.error(error.response?.data?.error || "An error occurred");
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <section className="flex flex-col items-center justify-center gap-4 h-screen">
-      <div className="auth-form-container bg-white shadow-lg rounded-lg p-6 w-96 md:w-[600px] lg:w-1/2 min-h-[350px]">
-        <form className="flex flex-col gap-4 h-full" onSubmit={submitForm}>
-          <h1 className="text-3xl font-bold mb-2 text-primary-500">{title}</h1>
-          {fields.map((field, index) => (
-            <div key={index} className="flex flex-col">
-              <Input
-                type={field.type}
-                name={field.name}
-                required={field.required}
-                accept={field.accept}
-                minLength={field.minLength}
-                label={field.label ? field.label : field.name}
-                className={field.name === "username" || field.name === "email" ? "lowercase" : ""}
-                pattern={field.name === "username" ? "^[a-z_][a-z0-9_]*$" : field.pattern}
-                onChange={(e) => handleInputChange(field.name, e.target.value)}
-              />
-              {errors[field.name] && <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>}
-            </div>
-          ))}
+    <>
+      {loading && <Loader />}
+      <section className="flex flex-col items-center justify-center gap-4 h-screen">
+        <div className="auth-form-container bg-white shadow-lg rounded-lg p-6 w-96 md:w-[600px] lg:w-1/2 min-h-[350px]">
+          <form className="flex flex-col gap-4 h-full" onSubmit={submitForm}>
+            <h1 className="text-3xl font-bold mb-2 text-primary-500">{title}</h1>
+            {fields.map((field, index) => (
+              <div key={index} className="flex flex-col">
+                <Input
+                  type={field.type}
+                  name={field.name}
+                  required={field.required}
+                  accept={field.accept}
+                  minLength={field.minLength}
+                  label={field.label ? field.label : field.name}
+                  className={field.name === "username" || field.name === "email" ? "lowercase" : ""}
+                  pattern={field.name === "username" ? "^[a-z_][a-z0-9_]*$" : field.pattern}
+                  onChange={(e) => handleInputChange(field.name, e.target.value)}
+                />
+                {errors[field.name] && <p className="text-red-500 text-xs mt-1">{errors[field.name]}</p>}
+              </div>
+            ))}
 
-          <Button type="submit" className="mt-auto">
-            {title.split(" ")[0]}
-          </Button>
+            <Button type="submit" className="mt-auto">
+              {title.split(" ")[0]}
+            </Button>
 
-          <p className="text-center text-slate-500">
-            {linkText}{" "}
-            <Link href={linkUrl} className="text-sky-500 hover:text-sky-400 transition-all capitalize">
-              {linkUrl.split("/").pop()}
-            </Link>
-          </p>
-        </form>
-      </div>
-      <p className="text-2xl text-primary-500 font-semibold">OR</p>
-      <Button variant="outline-primary" className="w-2/3 sm:w-1/3" onClick={() => redirect("/")}>
-        Go Home
-      </Button>
-    </section>
+            <p className="text-center text-slate-500">
+              {linkText}{" "}
+              <Link href={linkUrl} className="text-sky-500 hover:text-sky-400 transition-all capitalize">
+                {linkUrl.split("/").pop()}
+              </Link>
+            </p>
+          </form>
+        </div>
+        <p className="text-2xl text-primary-500 font-semibold">OR</p>
+        <Button variant="outline-primary" className="w-2/3 sm:w-1/3" onClick={() => redirect("/")}>
+          Go Home
+        </Button>
+      </section>
+    </>
   );
 };
 

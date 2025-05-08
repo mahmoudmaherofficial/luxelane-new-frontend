@@ -12,7 +12,6 @@ api.interceptors.request.use(async (config) => {
   const accessToken = Cookies.get("accessToken");
   if (!accessToken) {
     try {
-      console.log('refreshing access token');
       const newAccessToken = await refreshAccessToken()
       config.headers.Authorization = `Bearer ${newAccessToken}`;
       return config;
