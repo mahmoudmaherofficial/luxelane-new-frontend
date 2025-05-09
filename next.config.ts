@@ -7,8 +7,9 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["res.cloudinary.com"],
   },
+  swcMinify: true, // Enable SWC minification instead of Terser
   webpack: (config) => {
-    config.optimization.minimize = false;
+    // We're keeping this for compatibility but enabling SWC minification
     return config;
   },
 };
