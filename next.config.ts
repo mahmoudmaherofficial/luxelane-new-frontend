@@ -7,11 +7,10 @@ const nextConfig: NextConfig = {
   images: {
     domains: ["res.cloudinary.com"],
   },
-  swcMinify: true, // Enable SWC minification instead of Terser
-  webpack: (config) => {
-    // We're keeping this for compatibility but enabling SWC minification
-    return config;
-  },
+  swcMinify: true, // Enable SWC minification
+  experimental: {
+    optimizePackageImports: ['react-icons', 'lucide-react', 'framer-motion']
+  }
 };
 
 export default nextConfig;
