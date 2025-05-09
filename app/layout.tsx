@@ -6,18 +6,22 @@ import { ToastContainer } from "react-toastify";
 import { AccountProvider } from "@/context/AccountContext";
 import MainNavbarWrapper from "@/components/wrappers/MainNavbarWrapper";
 
+// Configure Merriweather_Sans with explicit weights and preload
 const merriweather = Merriweather_Sans({
   subsets: ["latin"],
+  weight: ["300", "400", "700"], // Specify weights to avoid missing font weights
+  preload: true, // Preload font for better performance
 });
 
-export const metadata = (): Metadata => ({
+// Explicitly type metadata
+export const metadata: Metadata = {
   title: {
-    template: `%s | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
-    default: process.env.NEXT_PUBLIC_SITE_NAME as string,
+    template: `%s | ${process.env.NEXT_PUBLIC_SITE_NAME || "Luxury Fashion"}`, // Fallback for undefined env
+    default: process.env.NEXT_PUBLIC_SITE_NAME || "Luxury Fashion",
   },
   description:
     "Your one-stop destination for luxury fashion and accessories. Shop the latest trends and exclusive collections today!",
-});
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -25,7 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css" />
       </head>
-      <body className={merriweather.className + " overflow-x-hidden"}>
+      <body className={`${merriweather.className} overflow-x-hidden`}>
         <AccountProvider>
           <MainNavbarWrapper>
             <main>
