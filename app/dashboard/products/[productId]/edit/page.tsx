@@ -24,6 +24,7 @@ const EditProductPage = () => {
     colors: [] as string[],
     images: [] as string[],
   });
+  const formDataImages: any = formData.images || [];
   const [customSize, setCustomSize] = useState("");
   const [customSizeType, setCustomSizeType] = useState("number");
   const [newImages, setNewImages] = useState<File[]>([]);
@@ -173,16 +174,17 @@ const EditProductPage = () => {
 
   // Remove image (existing or new)
   const removeImage = (index: number) => {
-    const isExistingImage = index < formData.images?.length;
+    const images: any = formData.images;
+    const isExistingImage = index < images.length;
     if (isExistingImage) {
-      const imageUrl = formData.images[index];
+      const imageUrl = images[index];
       setDeletedImages((prev) => [...prev, imageUrl]);
       setFormData((prev) => ({
         ...prev,
         images: prev.images?.filter((_, i) => i !== index),
       }));
     } else {
-      const newImageIndex = index - formData.images.length;
+      const newImageIndex = index - images.length;
       setNewImages((prev) => prev.filter((_, i) => i !== newImageIndex));
     }
     setImagePreviews((prev) => prev.filter((_, i) => i !== index));
@@ -484,13 +486,13 @@ const EditProductPage = () => {
                         <img src={preview} alt={`Image ${index + 1}`} className="w-16 h-16 object-cover rounded-md" />
                         <div>
                           <p className="text-sm font-medium">
-                            {index < formData.images.length
+                            {index < formDataImages.length
                               ? `Existing Image ${index + 1}`
-                              : newImages[index - formData.images.length]?.name}
+                              : newImages[index - formDataImages.length]?.name}
                           </p>
-                          {index >= formData.images.length && (
+                          {index >= formDataImages.length && (
                             <p className="text-sm text-slate-600">
-                              {formatFileSize(newImages[index - formData.images.length]?.size)}
+                              {formatFileSize(newImages[index - formDataImages.length]?.size)}
                             </p>
                           )}
                           <div className="w-32 h-2 bg-primary-100 rounded-full mt-1">

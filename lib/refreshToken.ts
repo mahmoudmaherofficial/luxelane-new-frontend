@@ -1,6 +1,6 @@
 // lib/refreshToken.ts
 import { RefreshTokenResponse } from "@/types";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 // Reusable function to refresh access token
 export default async function refreshAccessToken(): Promise<string | undefined> {
@@ -20,7 +20,7 @@ export default async function refreshAccessToken(): Promise<string | undefined> 
     // }
 
     return accessToken;
-  } catch (error: AxiosError | any) {
+  } catch (error: any) {
     if (error.response.status === 403) {
       throw new Error("Unauthorized");
     }

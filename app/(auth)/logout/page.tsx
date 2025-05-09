@@ -5,15 +5,12 @@ import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import axios from "axios";
 
-import { useRouter } from "next/navigation";
-
 const logoutFn = async () => {
   await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/logout`, {}, { withCredentials: true });
   return { success: true };
 };
 
 const LogoutPage = () => {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 

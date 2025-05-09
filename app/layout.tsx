@@ -13,7 +13,7 @@ const merriweather = Merriweather_Sans({
 export const metadata = (): Metadata => ({
   title: {
     template: `%s | ${process.env.NEXT_PUBLIC_SITE_NAME}`,
-    default: process.env.NEXT_PUBLIC_SITE_NAME,
+    default: process.env.NEXT_PUBLIC_SITE_NAME as string,
   },
   description:
     "Your one-stop destination for luxury fashion and accessories. Shop the latest trends and exclusive collections today!",

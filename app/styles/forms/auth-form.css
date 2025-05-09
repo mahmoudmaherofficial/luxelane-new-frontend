@@ -1,6 +1,6 @@
 @media (min-width: 1024px) {
   .auth-form-container {
-    background: linear-gradient(100deg, #fff 65%, #fff 65%, #0000 0), url('@/public/images/form-bg.avif');
+    background: linear-gradient(100deg, #fff 65%, #fff 65%, #0000 0), url('/images/form-bg.avif');
     background-position: right;
     background-size: cover;
     background-repeat: no-repeat;
