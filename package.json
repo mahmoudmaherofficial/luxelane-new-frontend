@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "npm install lightningcss-linux-x64-gnu@1.24.0 --no-save && next build",
+    "build": "next build",
+    "build:vercel": "npm install lightningcss-linux-x64-gnu@1.24.0 --no-save && next build",
     "start": "next start",
     "lint": "next lint"
   },
@@ -39,8 +40,5 @@
     "eslint-config-next": "15.3.1",
     "tailwindcss": "^4",
     "typescript": "^5"
-  },
-  "overrides": {
-    "lightningcss": "1.24.0"
   }
 }
