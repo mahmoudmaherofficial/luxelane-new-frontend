@@ -1,12 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { getCategoryById, updateCategory } from "@/api/categories";
-import Button from "@/components/ui/Button";
-import Loader from "@/components/ui/Loader";
+import { getCategoryById, updateCategory } from "../../../../../api/categories";
+import Button from "../../../../../components/ui/Button";
+import Loader from "../../../../../components/ui/Loader";
 import { toast } from "react-toastify";
 import { Category } from "@/types";
-import Input from "@/components/ui/Input";
+import Input from "../../../../../components/ui/Input";
 import { motion } from "framer-motion";
 
 const EditCategoryPage = () => {

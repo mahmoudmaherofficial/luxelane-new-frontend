@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { createCategory as createCategoryApi } from "@/api/categories"; // تأكد إنها موجودة
+import { createCategory as createCategoryApi } from "../../../../api/categories"; // تأكد إنها موجودة
 import Button from "@/components/ui/Button";
 import { toast } from "react-toastify";
 import { Category } from "@/types";
