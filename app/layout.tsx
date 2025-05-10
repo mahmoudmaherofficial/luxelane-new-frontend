@@ -1,13 +1,15 @@
+import { Montserrat } from "next/font/google";
 import type { Metadata } from "next";
 import "./styles/globals.css";
 import "./styles/tailwind.css";
 import { ToastContainer } from "react-toastify";
 import { AccountProvider } from "@/context/AccountContext";
 import MainNavbarWrapper from "@/components/wrappers/MainNavbarWrapper";
-import { Montserrat } from "next/font/google";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
+  display: "swap",
+  variable: "--font-montserrat",
 });
 
 // Explicitly type metadata
