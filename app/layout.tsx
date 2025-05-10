@@ -1,17 +1,10 @@
 import type { Metadata } from "next";
-import { Merriweather_Sans } from "next/font/google";
 import "./styles/globals.css";
 import "./styles/tailwind.css";
 import { ToastContainer } from "react-toastify";
 import { AccountProvider } from "@/context/AccountContext";
 import MainNavbarWrapper from "@/components/wrappers/MainNavbarWrapper";
 
-// Configure Merriweather_Sans with explicit weights and preload
-const merriweather = Merriweather_Sans({
-  subsets: ["latin"],
-  weight: ["300", "400", "700"], // Specify weights to avoid missing font weights
-  preload: true, // Preload font for better performance
-});
 
 // Explicitly type metadata
 export const metadata: Metadata = {
@@ -29,7 +22,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css" />
       </head>
-      <body className={`${merriweather.className} overflow-x-hidden`}>
+      <body className={`overflow-x-hidden`}>
         <AccountProvider>
           <MainNavbarWrapper>
             <main>
