@@ -1,4 +1,4 @@
-import { Montserrat } from "next/font/google";
+// import { Montserrat } from "next/font/google";
 import type { Metadata } from "next";
 import "./styles/globals.css";
 import "./styles/tailwind.css";
@@ -6,11 +6,11 @@ import { ToastContainer } from "react-toastify";
 import { AccountProvider } from "@/context/AccountContext";
 import MainNavbarWrapper from "@/components/wrappers/MainNavbarWrapper";
 
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  display: "swap",
-  variable: "--font-montserrat",
-});
+// const montserrat = Montserrat({
+//   subsets: ["latin"],
+//   display: "swap",
+//   variable: "--font-montserrat",
+// });
 
 // Explicitly type metadata
 export const metadata: Metadata = {
@@ -28,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css" />
       </head>
-      <body className={`${montserrat.className} overflow-x-hidden`}>
+      <body className={`overflow-x-hidden`}>
         <AccountProvider>
           <MainNavbarWrapper>
             <main>
