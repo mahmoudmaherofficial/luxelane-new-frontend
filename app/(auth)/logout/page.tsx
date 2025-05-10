@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import Button from "@/components/ui/Button";
+import Button from "../../../components/ui/Button";
 import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import axios from "axios";
